@@ -1,6 +1,8 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -160,6 +162,20 @@ User Role: {req.role}"""
         print(f"Error calling AI chat: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to process chat request: {str(e)}")
 
-@app.get("/")
-def read_root():
-    return {"status": "MedAssist AI Backend Running"}
+dist_dir = os.path.join(os.path.dirname(__file__), "..", "dist")
+
+if os.path.exists(dist_dir):
+    # Mount assets folder directly
+    app.mount("/assets", StaticFiles(directory=os.path.join(dist_dir, "assets")), name="assets")
+    
+    # Catch-all route for SPA fallback
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        file_path = os.path.join(dist_dir, full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(dist_dir, "index.html"))
+else:
+    @app.get("/")
+    def read_root():
+        return {"status": "MedAssist AI Backend Running (Frontend build not found)"}
