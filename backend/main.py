@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
 import re
-from drug_api import router as drug_router
+from backend.drug_api import router as drug_router
 
 # Load environment variables
 load_dotenv()
