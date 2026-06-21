@@ -8,6 +8,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import re
 from backend.drug_api import router as drug_router
+from backend.medical_rag import get_medical_context
 
 # Load environment variables
 load_dotenv()
@@ -15,7 +16,7 @@ load_dotenv()
 # Setup OpenAI Client for Nvidia API
 client = OpenAI(
   base_url = "https://integrate.api.nvidia.com/v1",
-  api_key = "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"
+  api_key = os.getenv("AI_API_KEY", "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")
 )
 
 app = FastAPI()
@@ -63,6 +64,11 @@ async def process_voice_assistant(req: VoiceRequest):
         
         # Build prompt enforcing language
         prompt = f"{SYSTEM_PROMPT}\n\nIMPORTANT LANGUAGE RULE: You MUST reply entirely in the language corresponding to language code '{req.language}'. If it's 'ta', reply in Tamil. If it's 'hi', reply in Hindi. If it's 'kn', reply in Kannada. If it's 'ml', reply in Malayalam. If it's 'te', reply in Telugu. If it's 'en', reply in English.\n\nUser Role: {req.role}\nUser Message: {req.message}"
+        
+        # Integrate Medical RAG
+        medical_context = get_medical_context(req.message)
+        if medical_context:
+            prompt += medical_context
         
         # Call Nvidia API using OpenAI client
         completion = client.chat.completions.create(
@@ -127,6 +133,11 @@ async def process_chat(req: ChatRequest):
 CRITICAL LANGUAGE RULE: You MUST reply ENTIRELY in {lang_name} (language code: '{req.language}'). Every single word of your response must be in {lang_name}. Do NOT use English unless the language code is 'en'. This is non-negotiable.
 
 User Role: {req.role}"""
+        
+        # Integrate Medical RAG
+        medical_context = get_medical_context(req.message)
+        if medical_context:
+            system_msg += medical_context
         
         # Build conversation history for context
         messages = [{"role": "system", "content": system_msg}]

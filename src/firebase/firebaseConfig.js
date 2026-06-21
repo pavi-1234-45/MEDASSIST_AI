@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBbr2gyD7NrZ_dwO2Hml9GA78BESbGs7ks",
-  authDomain: "medassist-ai-fc49b.firebaseapp.com",
-  projectId: "medassist-ai-fc49b",
-  storageBucket: "medassist-ai-fc49b.firebasestorage.app",
-  messagingSenderId: "1002438576594",
-  appId: "1:1002438576594:web:c3dec7e7128ec01b22a00b",
-  measurementId: "G-4T29VE790T"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_API_KEY",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "medassist-ai-fc49b.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "medassist-ai-fc49b",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medassist-ai-fc49b.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1002438576594",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1002438576594:web:c3dec7e7128ec01b22a00b",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-4T29VE790T"
 };
 
 let app;

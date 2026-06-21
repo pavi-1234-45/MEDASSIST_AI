@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
-  onAuthStateChanged, 
+  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -35,9 +36,8 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const unsubscribe = onIdTokenChanged(auth, async (user) => {
         if (user) {
-          // If real firebase user, we still need a role. If we don't have one in DB, we'll assume patient.
           const role = localStorage.getItem('ma_role') || 'patient';
           const token = await user.getIdToken().catch(() => null);
           const userData = {
@@ -55,6 +55,7 @@ export function AuthProvider({ children }) {
           const isMock = stored && (JSON.parse(stored).uid?.toString().startsWith('demo') || !stored.includes('"uid"'));
           if (!isMock) {
             setCurrentUser(null);
+            localStorage.removeItem('token');
           }
         }
         setLoading(false);

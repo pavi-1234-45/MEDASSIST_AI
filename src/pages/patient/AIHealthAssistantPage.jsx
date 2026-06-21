@@ -39,7 +39,7 @@ export default function AIHealthAssistantPage() {
         .filter(m => !m.isEmergencyCard)
         .map(m => ({ role: m.role, text: m.text }));
 
-      const response = await apiClient('http://localhost:8000/ai/chat', {
+      const response = await apiClient('/ai/chat', {
         method: 'POST',
         body: JSON.stringify({
           message: userMessage,
@@ -79,7 +79,7 @@ export default function AIHealthAssistantPage() {
     setVoiceResponse('Thinking...');
 
     try {
-      const response = await apiClient('http://localhost:8000/ai/voice-assistant', {
+      const response = await apiClient('/ai/voice-assistant', {
         method: 'POST',
         body: JSON.stringify({
           message: userMessage,
