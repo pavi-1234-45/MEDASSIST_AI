@@ -2,19 +2,22 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import google.generativeai as genai
+from openai import OpenAI
 from dotenv import load_dotenv
 import re
+from drug_api import router as drug_router
 
 # Load environment variables
 load_dotenv()
 
-# Setup API Key
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if GEMINI_API_KEY and GEMINI_API_KEY != "YOUR_GEMINI_API_KEY_HERE":
-    genai.configure(api_key=GEMINI_API_KEY)
+# Setup OpenAI Client for Nvidia API
+client = OpenAI(
+  base_url = "https://integrate.api.nvidia.com/v1",
+  api_key = "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"
+)
 
 app = FastAPI()
+app.include_router(drug_router)
 
 # Setup CORS
 app.add_middleware(
@@ -52,28 +55,29 @@ SYSTEM_PROMPT = """You are MedAssist AI, a multilingual healthcare assistant. Gi
 
 @app.post("/ai/voice-assistant", response_model=VoiceResponse)
 async def process_voice_assistant(req: VoiceRequest):
-    if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE":
-        # Fallback if API key is not configured
-        return VoiceResponse(
-            reply="Please configure your GEMINI_API_KEY in the backend .env file.",
-            emergency=False
-        )
-    
     try:
         # Determine emergency based on simple keyword search on transcript
         is_emergency = detect_emergency(req.message)
         
-        # Configure the model
-        model = genai.GenerativeModel('gemini-pro')
-        
         # Build prompt enforcing language
         prompt = f"{SYSTEM_PROMPT}\n\nIMPORTANT LANGUAGE RULE: You MUST reply entirely in the language corresponding to language code '{req.language}'. If it's 'ta', reply in Tamil. If it's 'hi', reply in Hindi. If it's 'kn', reply in Kannada. If it's 'ml', reply in Malayalam. If it's 'te', reply in Telugu. If it's 'en', reply in English.\n\nUser Role: {req.role}\nUser Message: {req.message}"
         
-        # Call Gemini
-        response = model.generate_content(prompt)
-        reply_text = response.text
+        # Call Nvidia API using OpenAI client
+        completion = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=1,
+            top_p=1,
+            max_tokens=4096,
+            stream=False
+        )
         
-        # Safety catch if Gemini itself detects emergency and returns a warning
+        reply_text = completion.choices[0].message.content
+        reasoning = getattr(completion.choices[0].message, "reasoning_content", None)
+        if reasoning:
+            print("Reasoning:", reasoning)
+        
+        # Safety catch if model itself detects emergency and returns a warning
         if detect_emergency(reply_text):
             is_emergency = True
             
@@ -82,8 +86,79 @@ async def process_voice_assistant(req: VoiceRequest):
             emergency=is_emergency
         )
     except Exception as e:
-        print(f"Error calling Gemini: {e}")
+        print(f"Error calling AI: {e}")
         raise HTTPException(status_code=500, detail="Failed to process voice request")
+
+# --- Chat endpoint for the AI Health Assistant chatbot ---
+class ChatMessage(BaseModel):
+    role: str  # 'user' or 'assistant'
+    text: str
+
+class ChatRequest(BaseModel):
+    message: str
+    language: str
+    role: str
+    history: list[ChatMessage] = []
+
+class ChatResponse(BaseModel):
+    reply: str
+    emergency: bool
+
+LANGUAGE_MAP = {
+    "en": "English",
+    "ta": "Tamil",
+    "hi": "Hindi",
+    "kn": "Kannada",
+    "ml": "Malayalam",
+    "te": "Telugu",
+}
+
+@app.post("/ai/chat", response_model=ChatResponse)
+async def process_chat(req: ChatRequest):
+    try:
+        is_emergency = detect_emergency(req.message)
+        
+        lang_name = LANGUAGE_MAP.get(req.language, "English")
+        
+        system_msg = f"""{SYSTEM_PROMPT}
+
+CRITICAL LANGUAGE RULE: You MUST reply ENTIRELY in {lang_name} (language code: '{req.language}'). Every single word of your response must be in {lang_name}. Do NOT use English unless the language code is 'en'. This is non-negotiable.
+
+User Role: {req.role}"""
+        
+        # Build conversation history for context
+        messages = [{"role": "system", "content": system_msg}]
+        
+        for msg in req.history[-10:]:  # Keep last 10 messages for context
+            api_role = "assistant" if msg.role == "assistant" else "user"
+            messages.append({"role": api_role, "content": msg.text})
+        
+        messages.append({"role": "user", "content": req.message})
+        
+        completion = client.chat.completions.create(
+            model="meta/llama-3.1-70b-instruct",
+            messages=messages,
+            temperature=0.7,
+            top_p=1,
+            max_tokens=4096,
+            stream=False
+        )
+        
+        reply_text = completion.choices[0].message.content
+        reasoning = getattr(completion.choices[0].message, "reasoning_content", None)
+        if reasoning:
+            print("Reasoning:", reasoning)
+        
+        if detect_emergency(reply_text):
+            is_emergency = True
+            
+        return ChatResponse(
+            reply=reply_text,
+            emergency=is_emergency
+        )
+    except Exception as e:
+        print(f"Error calling AI chat: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to process chat request: {str(e)}")
 
 @app.get("/")
 def read_root():

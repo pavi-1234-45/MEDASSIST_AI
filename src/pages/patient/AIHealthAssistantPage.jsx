@@ -6,8 +6,12 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
+import { apiClient } from '../../utils/apiClient';
+
 export default function AIHealthAssistantPage() {
-  const { t } = useLanguage();
+  const { t, selectedLanguage } = useLanguage();
+  const [isLoading, setIsLoading] = useState(false);
+  const [voiceResponse, setVoiceResponse] = useState('');
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('chat');
   
@@ -21,32 +25,85 @@ export default function AIHealthAssistantPage() {
   const [isListening, setIsListening] = useState(false);
   const [voiceText, setVoiceText] = useState('');
 
-  const handleSendChat = (e) => {
+  const handleSendChat = async (e) => {
     e?.preventDefault();
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || isLoading) return;
     
-    setMessages(prev => [...prev, { role: 'user', text: chatInput }]);
-    const query = chatInput.toLowerCase();
+    const userMessage = chatInput;
+    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
     setChatInput('');
-    
-    const emergencyKeywords = ['chest pain', 'breathing difficulty', 'accident', 'severe pain', 'unconscious', 'stroke', 'severe bleeding'];
-    const isEmergency = emergencyKeywords.some(kw => query.includes(kw));
+    setIsLoading(true);
 
-    setTimeout(() => {
-      if (isEmergency) {
+    try {
+      const history = messages
+        .filter(m => !m.isEmergencyCard)
+        .map(m => ({ role: m.role, text: m.text }));
+
+      const response = await apiClient('http://localhost:8000/ai/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          message: userMessage,
+          language: selectedLanguage || 'en',
+          role: 'patient',
+          history: history
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.emergency) {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          text: "CRITICAL: Potential medical emergency detected.",
+          text: "CRITICAL: Potential medical emergency detected. Please seek immediate help.",
           isEmergencyCard: true 
         }]);
-      } else {
-        let reply = "I am a mock AI assistant. I can only understand basic keywords like 'fever' or 'headache'.";
-        if (query.includes('fever') || query.includes('headache')) {
-          reply = "Please rest well and stay hydrated. If symptoms persist for more than 2 days, please consult your doctor or use the emergency SOS.";
-        }
-        setMessages(prev => [...prev, { role: 'assistant', text: reply }]);
       }
-    }, 1000);
+      setMessages(prev => [...prev, { role: 'assistant', text: data.reply }]);
+    } catch (error) {
+      console.error(error);
+      if (error.message !== 'Unauthorized') {
+        toast.error('Failed to get response from AI');
+        setMessages(prev => [...prev, { role: 'assistant', text: "Sorry, I am having trouble connecting to the server." }]);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVoiceSubmit = async () => {
+    if (!voiceText.trim() || isLoading) return;
+    
+    const userMessage = voiceText;
+    setVoiceText('');
+    setIsLoading(true);
+    setVoiceResponse('Thinking...');
+
+    try {
+      const response = await apiClient('http://localhost:8000/ai/voice-assistant', {
+        method: 'POST',
+        body: JSON.stringify({
+          message: userMessage,
+          language: selectedLanguage || 'en',
+          role: 'patient'
+        })
+      });
+
+      const data = await response.json();
+
+      setVoiceResponse(data.reply);
+      if (data.emergency) {
+        toast.error("EMERGENCY DETECTED!");
+        navigate('/patient/emergency');
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.message !== 'Unauthorized') {
+        toast.error('Failed to get response from AI');
+        setVoiceResponse('Sorry, an error occurred while calling the AI.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleMicToggle = () => {
@@ -115,6 +172,13 @@ export default function AIHealthAssistantPage() {
                     )}
                   </div>
                 ))}
+                {isLoading && activeTab === 'chat' && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] p-4 rounded-2xl bg-gray-100 text-gray-500 rounded-bl-none animate-pulse">
+                      Thinking...
+                    </div>
+                  </div>
+                )}
               </div>
               <form onSubmit={handleSendChat} className="p-4 border-t border-gray-100 bg-gray-50 flex gap-2 shrink-0">
                 <input 
@@ -124,7 +188,7 @@ export default function AIHealthAssistantPage() {
                   placeholder="Type your health concern here..." 
                   className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-medical-blue outline-none"
                 />
-                <button type="submit" disabled={!chatInput.trim()} className="p-3 bg-medical-blue hover:bg-blue-700 text-white rounded-xl transition-colors disabled:opacity-50">
+                <button type="submit" disabled={!chatInput.trim() || isLoading} className="p-3 bg-medical-blue hover:bg-blue-700 text-white rounded-xl transition-colors disabled:opacity-50">
                   <Send size={20} />
                 </button>
               </form>
@@ -161,14 +225,26 @@ export default function AIHealthAssistantPage() {
                     type="text" 
                     value={voiceText}
                     onChange={(e) => setVoiceText(e.target.value)}
-                    placeholder="Transcribed text will appear here..." 
+                    onKeyDown={(e) => e.key === 'Enter' && handleVoiceSubmit()}
+                    placeholder="Type or speak..." 
                     className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-medical-blue outline-none"
                   />
-                  <button className="p-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl transition-colors">
+                  <button 
+                    onClick={handleVoiceSubmit}
+                    disabled={isLoading || !voiceText.trim()}
+                    className="p-3 bg-medical-blue hover:bg-blue-700 text-white rounded-xl transition-colors disabled:opacity-50"
+                  >
                     <Send size={20} />
                   </button>
                 </div>
               </div>
+
+              {voiceResponse && (
+                <div className="w-full max-w-md mt-6 p-4 bg-blue-50 text-blue-900 rounded-xl border border-blue-100 shadow-sm text-left">
+                  <p className="font-bold text-sm mb-1 text-blue-700">AI Voice Assistant:</p>
+                  <p className="whitespace-pre-wrap">{voiceResponse}</p>
+                </div>
+              )}
 
             </motion.div>
           )}

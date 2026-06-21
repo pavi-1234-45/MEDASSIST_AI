@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -38,6 +39,8 @@ class ErrorBoundary extends React.Component {
   };
 
   render() {
+    const { t } = this.props;
+    
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -47,7 +50,7 @@ class ErrorBoundary extends React.Component {
             </div>
 
             <h1 className="text-2xl font-semibold text-gray-900 mb-3">
-              Something went wrong.
+              {t('somethingWentWrong')}
             </h1>
 
             <p className="text-gray-600 mb-6">
@@ -59,14 +62,14 @@ class ErrorBoundary extends React.Component {
                 onClick={this.handleRefresh}
                 className="px-5 py-3 rounded-xl bg-gray-100 text-gray-800 font-medium hover:bg-gray-200 transition"
               >
-                Refresh Page
+                {t('refresh_page') || "Refresh Page"}
               </button>
 
               <button
                 onClick={this.handleGoToDashboard}
                 className="px-5 py-3 rounded-xl bg-teal-700 text-white font-medium hover:bg-teal-800 transition"
               >
-                Go to Dashboard
+                {t('returnToDashboard') || "Go to Dashboard"}
               </button>
             </div>
           </div>
@@ -78,4 +81,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default ErrorBoundary;
+export default function ErrorBoundaryWithTranslation(props) {
+  const { t } = useLanguage();
+  return <ErrorBoundary {...props} t={t} />;
+}

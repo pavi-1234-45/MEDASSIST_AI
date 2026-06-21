@@ -41,6 +41,8 @@ import Chat from './pages/Chat';
 import VoiceAssistant from './pages/VoiceAssistant';
 import AIHealthAssistantPage from './pages/patient/AIHealthAssistantPage';
 import PatientMedicinesPage from './pages/patient/PatientMedicinesPage';
+import MedicineSearch from './pages/patient/MedicineSearch';
+import HospitalSearch from './pages/patient/HospitalSearch';
 import Appointments from './pages/Appointments';
 import Emergency from './pages/Emergency';
 import Caregiver from './pages/Caregiver';
@@ -132,6 +134,8 @@ export default function App() {
               <Route path="support" element={<WhatsAppIVR />} />
               <Route path="profile" element={<Profile />} />
               <Route path="reports" element={<Reports />} />
+              <Route path="medicines-search" element={<MedicineSearch />} />
+              <Route path="hospitals" element={<HospitalSearch />} />
               <Route path="settings" element={<Settings />} />
             </Route>
 

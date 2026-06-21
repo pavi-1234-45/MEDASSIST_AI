@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
-  getAuth, 
   onAuthStateChanged, 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -9,6 +8,7 @@ import {
   signInWithPopup,
   updateProfile
 } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
 
 const AuthContext = createContext();
 
@@ -20,21 +20,13 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  // Try to get auth, but don't crash if firebase isn't configured
-  let auth;
-  try {
-    auth = getAuth();
-  } catch (e) {
-    console.log("Firebase auth not ready");
-  }
+  // Using auth imported from firebaseConfig
 
   useEffect(() => {
-    // Check for mock user first
+    // Check for mock user or stored user first
     const storedUser = localStorage.getItem('medassist_user');
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
-      setLoading(false);
-      return;
     }
 
     if (!auth) {
@@ -43,12 +35,27 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
         if (user) {
           // If real firebase user, we still need a role. If we don't have one in DB, we'll assume patient.
-          setCurrentUser({ ...user, role: 'patient' });
+          const role = localStorage.getItem('ma_role') || 'patient';
+          const token = await user.getIdToken().catch(() => null);
+          const userData = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            role: role
+          };
+          localStorage.setItem('medassist_user', JSON.stringify(userData));
+          if (token) localStorage.setItem('token', token);
+          setCurrentUser(userData);
         } else {
-          setCurrentUser(null);
+          // Avoid clearing mock user if Firebase reports null
+          const stored = localStorage.getItem('medassist_user');
+          const isMock = stored && (JSON.parse(stored).uid?.toString().startsWith('demo') || !stored.includes('"uid"'));
+          if (!isMock) {
+            setCurrentUser(null);
+          }
         }
         setLoading(false);
       });
@@ -60,12 +67,33 @@ export function AuthProvider({ children }) {
     }
   }, [auth]);
 
+  // Listen for 401 Unauthorized events from apiClient
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout();
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, []);
+
   const signup = async (email, password, displayName, role, extraData = {}) => {
     try {
       if (auth) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName });
-        // In a real app, save extraData and role to Firestore here
+        
+        const token = await userCredential.user.getIdToken();
+        const userData = {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: displayName,
+          role: role,
+          ...extraData
+        };
+        localStorage.setItem('medassist_user', JSON.stringify(userData));
+        localStorage.setItem('token', token);
+        setCurrentUser(userData);
+        
         return userCredential;
       } else {
         throw new Error("No Firebase Auth");
@@ -97,6 +125,16 @@ export function AuthProvider({ children }) {
     try {
       if (auth) {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const token = await userCredential.user.getIdToken();
+        const userData = {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: userCredential.user.displayName,
+          role: role
+        };
+        localStorage.setItem('medassist_user', JSON.stringify(userData));
+        localStorage.setItem('token', token);
+        setCurrentUser(userData);
         return userCredential;
       } else {
         throw new Error("No Firebase Auth");
@@ -145,6 +183,16 @@ export function AuthProvider({ children }) {
       if (auth) {
         const provider = new GoogleAuthProvider();
         const userCredential = await signInWithPopup(auth, provider);
+        const token = await userCredential.user.getIdToken();
+        const userData = {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: userCredential.user.displayName,
+          role: role
+        };
+        localStorage.setItem('medassist_user', JSON.stringify(userData));
+        localStorage.setItem('token', token);
+        setCurrentUser(userData);
         return userCredential;
       } else {
         throw new Error("No Firebase Auth");

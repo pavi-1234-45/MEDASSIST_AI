@@ -102,8 +102,8 @@ export default function Layout({ children, title }) {
 
         <div className="p-4 border-t border-gray-100/50 bg-white/50">
           <div className="bg-gray-50/80 rounded-2xl p-4 mb-4 border border-gray-100">
-            <p className="text-sm font-bold text-gray-800 line-clamp-1">{currentUser?.displayName || 'User'}</p>
-            <p className="text-xs text-medical-blue uppercase font-bold mt-1 tracking-wider">{currentUser?.role || 'Patient'}</p>
+            <p className="text-sm font-bold text-gray-800 line-clamp-1">{currentUser?.displayName || t('patient')}</p>
+            <p className="text-xs text-medical-blue uppercase font-bold mt-1 tracking-wider">{t(currentUser?.role || 'patient')}</p>
           </div>
           <button 
             onClick={handleLogout}
@@ -177,7 +177,7 @@ export default function Layout({ children, title }) {
           <div className="flex items-center gap-6">
              {currentUser?.role === 'patient' && (
                <button onClick={() => navigate('/patient/emergency')} className="flex items-center gap-2 px-5 py-2.5 bg-red-50 border border-red-100 text-red-600 rounded-2xl font-bold text-sm hover:bg-red-100 hover:shadow-lg hover:shadow-red-500/20 transition-all">
-                 <AlertTriangle size={18} /> SOS Emergency
+                 <AlertTriangle size={18} /> {t('sos_emergency')}
                </button>
              )}
              <LanguageSelector />

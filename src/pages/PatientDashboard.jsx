@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { AlertTriangle, FileText, HeartPulse, Pill, CheckCircle, Clock, Calendar, UserPlus, PhoneCall, Bell, MessageSquare, Mic, User, Activity } from 'lucide-react';
+import { AlertTriangle, FileText, HeartPulse, Pill, CheckCircle, Clock, Calendar, UserPlus, PhoneCall, Bell, MessageSquare, Mic, User, Activity, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { dbService } from '../utils/firebaseService';
 
@@ -262,7 +262,7 @@ export default function PatientDashboard() {
                 </div>
               ) : (
                 <div className="bg-gray-50 flex-1 rounded-2xl flex items-center justify-center text-sm text-gray-500 mb-4">
-                  No upcoming appointments.
+                  {t('no_upcoming_appointments')}
                 </div>
               )}
 
@@ -300,7 +300,7 @@ export default function PatientDashboard() {
                     <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold shrink-0">{t('status_linked')}</span>
                   </>
                 ) : (
-                  <div className="text-sm text-gray-500">No caregiver linked.</div>
+                  <div className="text-sm text-gray-500">{t('no_caregiver_linked')}</div>
                 )}
               </div>
 
@@ -330,6 +330,22 @@ export default function PatientDashboard() {
               <div>
                 <h3 className="font-bold text-gray-800 group-hover:text-medical-blue transition-colors">{t('ai_chat')}</h3>
                 <p className="text-xs text-gray-500">{t('ai_chat_desc')}</p>
+              </div>
+            </motion.div>
+
+            <motion.div whileHover={{ y: -4 }} onClick={() => navigate('/patient/medicines-search')} className="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 hover:shadow-md hover:border-medical-teal/30 cursor-pointer flex items-center gap-4 group transition-all">
+              <div className="w-12 h-12 bg-teal-50 text-medical-teal rounded-[14px] flex items-center justify-center group-hover:scale-110 transition-transform"><Pill size={24} /></div>
+              <div>
+                <h3 className="font-bold text-gray-800 group-hover:text-medical-teal transition-colors">{t('search_medicines')}</h3>
+                <p className="text-xs text-gray-500">{t('search_medicines_desc')}</p>
+              </div>
+            </motion.div>
+
+            <motion.div whileHover={{ y: -4 }} onClick={() => navigate('/patient/hospitals')} className="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 hover:shadow-md hover:border-red-300 cursor-pointer flex items-center gap-4 group transition-all">
+              <div className="w-12 h-12 bg-red-50 text-red-500 rounded-[14px] flex items-center justify-center group-hover:scale-110 transition-transform"><Building2 size={24} /></div>
+              <div>
+                <h3 className="font-bold text-gray-800 group-hover:text-red-600 transition-colors">{t('hospital_directory')}</h3>
+                <p className="text-xs text-gray-500">{t('hospital_directory_desc')}</p>
               </div>
             </motion.div>
 

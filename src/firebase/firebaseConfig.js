@@ -2,12 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBbr2gyD7NrZ_dwO2Hml9GA78BESbGs7ks",
+  authDomain: "medassist-ai-fc49b.firebaseapp.com",
+  projectId: "medassist-ai-fc49b",
+  storageBucket: "medassist-ai-fc49b.firebasestorage.app",
+  messagingSenderId: "1002438576594",
+  appId: "1:1002438576594:web:c3dec7e7128ec01b22a00b",
+  measurementId: "G-4T29VE790T"
 };
 
 let app;
