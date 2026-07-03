@@ -25,6 +25,31 @@ export default function AIHealthAssistantPage() {
   const [isListening, setIsListening] = useState(false);
   const [voiceText, setVoiceText] = useState('');
 
+  // Stop TTS when component unmounts or mode switches
+  React.useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const speakText = (text, langCode) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Map internal lang codes to TTS standard codes
+    const langMap = {
+      'en': 'en-US',
+      'ta': 'ta-IN',
+      'hi': 'hi-IN',
+      'kn': 'kn-IN',
+      'te': 'te-IN',
+      'ml': 'ml-IN'
+    };
+    utterance.lang = langMap[langCode] || 'en-US';
+    window.speechSynthesis.speak(utterance);
+  };
+
   const handleSendChat = async (e) => {
     e?.preventDefault();
     if (!chatInput.trim() || isLoading) return;
@@ -70,11 +95,11 @@ export default function AIHealthAssistantPage() {
     }
   };
 
-  const handleVoiceSubmit = async () => {
-    if (!voiceText.trim() || isLoading) return;
+  const handleVoiceSubmit = async (textToSubmit = voiceText) => {
+    if (!textToSubmit.trim() || isLoading) return;
     
-    const userMessage = voiceText;
-    setVoiceText('');
+    const userMessage = textToSubmit;
+    setVoiceText(''); // Clear input
     setIsLoading(true);
     setVoiceResponse('Thinking...');
 
@@ -91,6 +116,8 @@ export default function AIHealthAssistantPage() {
       const data = await response.json();
 
       setVoiceResponse(data.reply);
+      speakText(data.reply, selectedLanguage || 'en');
+      
       if (data.emergency) {
         toast.error("EMERGENCY DETECTED!");
         navigate('/patient/emergency');
@@ -107,16 +134,61 @@ export default function AIHealthAssistantPage() {
   };
 
   const handleMicToggle = () => {
-    setIsListening(!isListening);
-    if (!isListening) {
-      toast.success("Voice listening started... (Mock)");
-      setTimeout(() => {
-        setIsListening(false);
-        setVoiceText("I need help with my medication.");
-      }, 3000);
-    } else {
-      toast.error("Voice listening stopped.");
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+      toast.error("Your browser does not support Speech Recognition. Please use Chrome.");
+      return;
     }
+
+    if (isListening) {
+      // We don't have direct access to the recognition instance here to call stop(), 
+      // but it will timeout automatically. For simplicity, just toggle state.
+      setIsListening(false);
+      toast.error("Voice listening stopped.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    
+    // Set language map for speech recognition
+    const langMap = {
+      'en': 'en-US',
+      'ta': 'ta-IN',
+      'hi': 'hi-IN',
+      'kn': 'kn-IN',
+      'te': 'te-IN',
+      'ml': 'ml-IN'
+    };
+    
+    recognition.lang = langMap[selectedLanguage || 'en'] || 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast.success("Listening... Speak now");
+      window.speechSynthesis.cancel(); // Stop talking if listening
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setVoiceText(transcript);
+      // Auto submit the recognized text
+      handleVoiceSubmit(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error", event.error);
+      toast.error(`Mic error: ${event.error}`);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
   };
 
   return (

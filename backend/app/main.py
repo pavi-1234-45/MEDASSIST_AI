@@ -4,7 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from app.routers import ai, medical, users, appointments
+from app.routers import (
+    ai, medical, users, appointments,
+    patients, doctors, alerts, medicines, reports, blockchain, health,
+)
 from app.config.settings import settings
 
 app = FastAPI(
@@ -22,11 +25,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount Routers
+# Mount ALL Routers
 app.include_router(ai.router)
 app.include_router(medical.router)
 app.include_router(users.router)
 app.include_router(appointments.router)
+app.include_router(patients.router)
+app.include_router(doctors.router)
+app.include_router(alerts.router)
+app.include_router(medicines.router)
+app.include_router(reports.router)
+app.include_router(blockchain.router)
+app.include_router(health.router)
 
 # Serve Frontend if dist exists
 dist_dir = os.path.join(os.path.dirname(__file__), "..", "..", "dist")
