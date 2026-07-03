@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 # ──────────────────────────────────────────────────────────────────────
 # Redis client singleton
 # ──────────────────────────────────────────────────────────────────────
-_redis_client: Optional[redis.Redis] = None
+_redis_client: Optional[Any] = None
 _redis_warned: bool = False
 
 
