@@ -6,6 +6,7 @@
     { "source": "/api/(.*)", "destination": "/api/serverless" },
     { "source": "/ai/(.*)", "destination": "/api/serverless" },
     { "source": "/users/(.*)", "destination": "/api/serverless" },
-    { "source": "/appointments/(.*)", "destination": "/api/serverless" }
+    { "source": "/appointments/(.*)", "destination": "/api/serverless" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
