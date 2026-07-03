@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_API_KEY",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBbr2gyD7NrZ_dwO2Hml9GA78BESbGs7ks",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "medassist-ai-fc49b.firebaseapp.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "medassist-ai-fc49b",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medassist-ai-fc49b.firebasestorage.app",

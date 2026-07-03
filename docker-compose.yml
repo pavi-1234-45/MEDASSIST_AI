@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MEDI_CLIENT_ID=19d254d9-16ec-4a10-9bf4-144e3d5dc859_1c26f6fe-092c-4035-80a3-3f9a4a5847de
+      - MEDI_CLIENT_SECRET=kNEATvsZRt47xL5m0jQyvcQvej5AoTL1oomj53xAFUY=
+      # Set API keys and Firebase credentials path here in production/dev
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # Optional mock blockchain service or Hyperledger Fabric could go here

@@ -1,7 +1,37 @@
+# ──────────────────────────────────────────────────────────────────────
+# MedAssist AI — Backend Dependencies
+# ──────────────────────────────────────────────────────────────────────
+
+# Core
 fastapi
 uvicorn[standard]
-google-generativeai
-python-dotenv
 pydantic
+pydantic-settings
+python-dotenv
+
+# AI / LLM
 openai
+
+# HTTP client
 requests
+httpx
+
+# Data Processing (WHO EML knowledge base)
+openpyxl
+
+# Firebase Admin SDK
+firebase-admin
+
+# Cache & Rate Limiting
+redis
+
+# Security
+python-jose[cryptography]
+
+# Production server
+gunicorn
+
+# Testing
+pytest
+pytest-asyncio
+httpx

@@ -1,4 +1,16 @@
+import { apiJson } from './apiClient';
+
+/**
+ * Data Service — bridges the frontend to the backend REST API.
+ *
+ * Function signatures and return shapes are identical to the original
+ * localStorage-based implementation so NO component changes are needed.
+ * Falls back to localStorage if the backend is unreachable.
+ */
+
+// ── Seed mock data (no-op when backend is available) ────────────────
 export const seedMockData = () => {
+  // Seed localStorage as fallback in case the backend is unavailable.
   if (!localStorage.getItem('medassist_patients')) {
     localStorage.setItem('medassist_patients', JSON.stringify([
       { id: 'p1', name: 'John Doe', age: 45, gender: 'Male', phone: '1234567890', condition: 'Diabetes', caregiver: 'Jane Doe', adherence: 85, lastAlert: '2 hours ago', status: 'Active' },
@@ -34,25 +46,107 @@ export const seedMockData = () => {
   }
 };
 
-export const getPatients = () => JSON.parse(localStorage.getItem('medassist_patients') || '[]');
-export const getDoctors = () => JSON.parse(localStorage.getItem('medassist_doctors') || '[]');
-export const getAppointments = () => JSON.parse(localStorage.getItem('medassist_appointments_global') || '[]');
-export const getAlerts = () => JSON.parse(localStorage.getItem('medassist_alerts_global') || '[]');
+// ── Helper: map backend snake_case to frontend camelCase ────────────
+const mapPatient = (p) => ({
+  id: p.id,
+  name: p.name,
+  age: p.age,
+  gender: p.gender,
+  phone: p.phone,
+  condition: p.condition,
+  caregiver: p.caregiver,
+  adherence: p.adherence ?? 0,
+  lastAlert: p.last_alert ?? p.lastAlert ?? null,
+  status: p.status ?? 'Active',
+});
 
-export const updateAppointmentStatus = (id, newStatus) => {
-  const apps = getAppointments();
-  const index = apps.findIndex(a => a.id === id);
-  if (index !== -1) {
-    apps[index].status = newStatus;
-    localStorage.setItem('medassist_appointments_global', JSON.stringify(apps));
+const mapAppointment = (a) => ({
+  id: a.id,
+  patientId: a.patient_id ?? a.patientId,
+  patientName: a.patient_name ?? a.patientName,
+  doctorId: a.doctor_id ?? a.doctorId,
+  doctorName: a.doctor_name ?? a.doctorName,
+  date: a.date,
+  time: a.time,
+  status: a.status,
+});
+
+const mapAlert = (a) => ({
+  id: a.id,
+  type: a.type,
+  patientName: a.patient_name ?? a.patientName,
+  symptom: a.symptom,
+  status: a.status,
+  time: a.time,
+});
+
+// ── Data getters (API-first with localStorage fallback) ─────────────
+export const getPatients = async () => {
+  try {
+    const data = await apiJson('/api/patients');
+    return data.map(mapPatient);
+  } catch {
+    return JSON.parse(localStorage.getItem('medassist_patients') || '[]');
   }
 };
 
-export const updateAlertStatus = (id, newStatus) => {
-  const alerts = getAlerts();
-  const index = alerts.findIndex(a => a.id === id);
-  if (index !== -1) {
-    alerts[index].status = newStatus;
-    localStorage.setItem('medassist_alerts_global', JSON.stringify(alerts));
+export const getDoctors = async () => {
+  try {
+    return await apiJson('/api/doctors');
+  } catch {
+    return JSON.parse(localStorage.getItem('medassist_doctors') || '[]');
+  }
+};
+
+export const getAppointments = async () => {
+  try {
+    const data = await apiJson('/api/appointments');
+    return data.map(mapAppointment);
+  } catch {
+    return JSON.parse(localStorage.getItem('medassist_appointments_global') || '[]');
+  }
+};
+
+export const getAlerts = async () => {
+  try {
+    const data = await apiJson('/api/alerts');
+    return data.map(mapAlert);
+  } catch {
+    return JSON.parse(localStorage.getItem('medassist_alerts_global') || '[]');
+  }
+};
+
+// ── Data mutators ───────────────────────────────────────────────────
+export const updateAppointmentStatus = async (id, newStatus) => {
+  try {
+    await apiJson(`/api/appointments/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ status: newStatus }),
+    });
+  } catch {
+    // Fallback to localStorage
+    const apps = JSON.parse(localStorage.getItem('medassist_appointments_global') || '[]');
+    const index = apps.findIndex(a => a.id === id);
+    if (index !== -1) {
+      apps[index].status = newStatus;
+      localStorage.setItem('medassist_appointments_global', JSON.stringify(apps));
+    }
+  }
+};
+
+export const updateAlertStatus = async (id, newStatus) => {
+  try {
+    await apiJson(`/api/alerts/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status: newStatus }),
+    });
+  } catch {
+    // Fallback to localStorage
+    const alerts = JSON.parse(localStorage.getItem('medassist_alerts_global') || '[]');
+    const index = alerts.findIndex(a => a.id === id);
+    if (index !== -1) {
+      alerts[index].status = newStatus;
+      localStorage.setItem('medassist_alerts_global', JSON.stringify(alerts));
+    }
   }
 };
