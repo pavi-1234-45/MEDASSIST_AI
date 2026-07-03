@@ -4,7 +4,10 @@ import logging
 import functools
 from typing import Optional, Callable, Any
 
-import redis
+try:
+    import redis
+except ImportError:
+    redis = None  # Not available in serverless (Vercel)
 
 from app.config.settings import settings
 
@@ -17,9 +20,11 @@ _redis_client: Optional[redis.Redis] = None
 _redis_warned: bool = False
 
 
-def get_redis() -> Optional[redis.Redis]:
+def get_redis() -> Optional["redis.Redis"]:
     """Return a Redis client (lazy singleton). Returns None if unavailable."""
     global _redis_client, _redis_warned
+    if redis is None:
+        return None
     if _redis_client is not None:
         return _redis_client
 
