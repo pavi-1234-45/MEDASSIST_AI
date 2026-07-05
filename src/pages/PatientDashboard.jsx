@@ -37,7 +37,7 @@ export default function PatientDashboard() {
       if (data) {
         const apptsArray = Object.keys(data)
           .map(key => ({ id: key, ...data[key] }))
-          .filter(a => a.patientId === currentUser.uid);
+          .filter(a => (a.patientId || a.patient_id) === currentUser.uid);
         setAppointments(apptsArray);
       } else {
         setAppointments([]);
@@ -254,7 +254,7 @@ export default function PatientDashboard() {
               
               {nextAppt ? (
                 <div className="bg-purple-50/50 p-4 rounded-[16px] border border-purple-100 mb-4 flex-1">
-                  <h3 className="font-bold text-gray-800">{nextAppt.doctorName}</h3>
+                  <h3 className="font-bold text-gray-800">{nextAppt.doctorName || nextAppt.doctor_name}</h3>
                   <p className="text-sm text-gray-600">{nextAppt.department} • {t(nextAppt.mode === 'Hospital Visit' ? 'hospital_visit' : 'online')}</p>
                   <div className="mt-3 flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-100 w-fit px-3 py-1 rounded-lg">
                     <Clock size={16} /> {nextAppt.date}, {nextAppt.time}

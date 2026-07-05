@@ -164,7 +164,7 @@ export default function PatientMedicinesPage() {
 
               {/* Reminder Details */}
               <div className="text-xs text-gray-500 mb-4 flex items-center gap-1">
-                <Bell size={12} /> {t('reminder_channel')}: {t(med.reminderChannel.toLowerCase().replace(' ', '_')) || med.reminderChannel}
+                <Bell size={12} /> {t('reminder_channel')}: {med.reminderChannel ? (t(med.reminderChannel.toLowerCase().replace(' ', '_')) || med.reminderChannel) : 'App Notification'}
               </div>
 
               {/* Actions */}

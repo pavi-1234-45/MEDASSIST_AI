@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - User Roles Database Design</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                htmlLabels: true,
+                curve: 'stepBefore'
+            },
+            themeVariables: {
+                lineColor: '#333333'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #cce5ff; 
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .diagram-container {
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid #99c2ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 1200px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MedAssist AI - Core Entities ER Diagram</h1>
+    <h2>(Patient, Doctor, Caretaker, Hospital)</h2>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+            flowchart TD
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef blue fill:#66b3ff,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Patient["<b><u>patients (Patient)</u></b><br/><b>PK</b> patient_id<br/>name<br/>age / gender<br/>condition<br/>adherence_score<br/>status"]:::green
+                
+                Doctor["<b><u>doctors (Doctor)</u></b><br/><b>PK</b> doctor_id<br/>name<br/>specialization<br/>total_appointments"]:::orange
+                
+                Caretaker["<b><u>caregiver_assignments (Caretaker)</u></b><br/><b>PK</b> assignment_id<br/><b>FK</b> patient_id<br/><b>FK</b> caregiver_user_id<br/>relationship<br/>is_active"]:::pink
+                
+                Hospital["<b><u>affiliations (Hospital)</u></b><br/><b>PK</b> affiliation_id<br/><b>FK</b> doctor_id<br/>hospital_name<br/>designation<br/>is_primary"]:::blue
+
+                Appt["<b><u>appointments (Interaction)</u></b><br/><b>PK</b> appointment_id<br/><b>FK</b> patient_id<br/><b>FK</b> doctor_id<br/>date / time<br/>status"]:::orange
+
+                %% Relationships
+                Patient -- "Has Caretaker" --- Caretaker
+                Doctor -- "Works at" --- Hospital
+                Patient -- "Books" --- Appt
+                Doctor -- "Consults" --- Appt
+        </div>
+    </div>
+
+</body>
+</html>

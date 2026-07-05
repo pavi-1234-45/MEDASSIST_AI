@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Patient Database Design</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                htmlLabels: true,
+                curve: 'stepBefore'
+            },
+            themeVariables: {
+                lineColor: '#333333'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #cce5ff; 
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .diagram-container {
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid #99c2ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 1400px; /* Wider for detailed central layout */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MedAssist AI - Detailed Patient Database Design</h1>
+    <h2>(Custom 360-Degree View of the Patient Ecosystem)</h2>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+            flowchart TD
+                classDef green fill:#4de64d,stroke:#000,stroke-width:2px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef blue fill:#66b3ff,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef purple fill:#d2a6ff,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                %% CORE PATIENT ENTITY
+                Patient["<b><u>patients (Core Entity)</u></b><br/><b>PK</b> patient_id<br/><b>FK</b> user_id<br/>name<br/>age<br/>gender<br/>phone<br/>condition<br/>caregiver<br/><b>FK</b> caregiver_id<br/>adherence<br/>last_alert<br/>status<br/>created_at<br/>updated_at"]:::green
+
+                %% DIRECT SUB-COLLECTIONS & AUTH
+                User["<b><u>users (Auth Identity)</u></b><br/><b>PK</b> user_id<br/>email<br/>display_name<br/>role='patient'"]:::blue
+                Caregiver["<b><u>caregiver_assignments</u></b><br/><b>PK</b> assignment_id<br/><b>FK</b> caregiver_id<br/>relationship<br/>is_active"]:::pink
+                Consent["<b><u>consent_records</u></b><br/><b>PK</b> consent_id<br/><b>FK</b> patient_id<br/>consent_type<br/>details<br/>consent_hash"]:::purple
+
+                %% CLINICAL DATA
+                Appt["<b><u>appointments</u></b><br/><b>PK</b> appointment_id<br/><b>FK</b> patient_id<br/><b>FK</b> doctor_id<br/>date<br/>time<br/>status"]:::orange
+                Meds["<b><u>medicines</u></b><br/><b>PK</b> medicine_id<br/><b>FK</b> patient_id<br/>name<br/>dosage<br/>frequency<br/>reminder_times<br/>is_active"]:::orange
+                Reports["<b><u>reports</u></b><br/><b>PK</b> report_id<br/><b>FK</b> patient_id<br/>type<br/>data (JSON Map)<br/>generated_at"]:::orange
+
+                %% INTERACTION DATA
+                Alerts["<b><u>alerts / emergencies</u></b><br/><b>PK</b> alert_id<br/><b>FK</b> patient_id<br/>type<br/>symptom<br/>status"]:::pink
+                AI_Chat["<b><u>chat_sessions</u></b><br/><b>PK</b> session_id<br/><b>FK</b> user_id<br/>emergency_detected<br/>started_at"]:::blue
+
+                %% RELATIONSHIPS MAPPED TO PATIENT
+                User -- "1 to 1" --- Patient
+                
+                Patient -- "Contains Subcol" --- Caregiver
+                Patient -- "Grants" --- Consent
+                
+                Patient -- "Books" --- Appt
+                Patient -- "Prescribed" --- Meds
+                Patient -- "Uploads" --- Reports
+                
+                Patient -- "Triggers" --- Alerts
+                Patient -- "Converses in" --- AI_Chat
+
+        </div>
+    </div>
+
+</body>
+</html>

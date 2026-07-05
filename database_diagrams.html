@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Database Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8fafc;
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .diagram-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        h2 {
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+        .description {
+            color: #64748b;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>MedAssist AI - Database Architecture</h1>
+    <p style="text-align: center; color: #64748b; margin-bottom: 50px;">
+        100% Custom Database ER Diagrams generated for your unique architecture.
+    </p>
+
+    <div class="diagram-container">
+        <h2>1. User and Authentication Collections</h2>
+        <p class="description">Manages the primary Firebase Authentication identities and core role-based access control (RBAC).</p>
+        <div class="mermaid">
+            erDiagram
+                FIREBASE_AUTH ||--o| USERS_COLLECTION : "Authenticates"
+            
+                FIREBASE_AUTH {
+                    string uid PK "Firebase Identity Token"
+                    string email
+                    string provider "Google / Email"
+                    timestamp last_login
+                }
+            
+                USERS_COLLECTION {
+                    string id PK "Matches Firebase UID"
+                    string email
+                    string display_name
+                    string role "patient | doctor | admin | caregiver"
+                    string phone
+                    timestamp created_at
+                    timestamp updated_at
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>2. Patient Management Collections</h2>
+        <p class="description">Nested sub-collections specifically mapping a patient's health profile and their linked emergency contacts.</p>
+        <div class="mermaid">
+            erDiagram
+                USERS_COLLECTION ||--o| PATIENT_PROFILE : "users/{uid}/profile"
+                USERS_COLLECTION ||--o| CAREGIVER_DATA : "users/{uid}/caregiver"
+            
+                PATIENT_PROFILE {
+                    string uid PK, FK
+                    string name
+                    int age
+                    string gender "Male | Female | Other"
+                    string bloodGroup
+                    string address
+                    string conditions "Array or CSV string"
+                    string allergies
+                    string currentMedicines
+                    string preferredLanguage
+                }
+            
+                CAREGIVER_DATA {
+                    string uid PK, FK
+                    string name
+                    string relationship
+                    string phone
+                    string email
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>3. Doctor Management Collections</h2>
+        <p class="description">Doctors have their own profile data, linking their qualifications, departments, and consultation settings.</p>
+        <div class="mermaid">
+            erDiagram
+                USERS_COLLECTION ||--o| DOCTOR_PROFILE : "users/{uid}/doctor_profile"
+            
+                DOCTOR_PROFILE {
+                    string uid PK, FK
+                    string name
+                    string specialization "e.g., Cardiology, General"
+                    string license_number
+                    int years_of_experience
+                    string consultation_fee
+                    array available_days "e.g., ['Mon', 'Wed', 'Fri']"
+                    string shift_timing "e.g., 09:00 AM - 05:00 PM"
+                    boolean is_verified
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>4. Appointment Scheduling Collections</h2>
+        <p class="description">The central ledger for all telemedicine and physical hospital visits between patients and doctors.</p>
+        <div class="mermaid">
+            erDiagram
+                APPOINTMENTS {
+                    string id PK "Unique Appointment ID"
+                    string patient_id FK "References USERS"
+                    string doctor_id FK "References USERS"
+                    string patient_name
+                    string doctor_name
+                    string department
+                    string mode "Online | Hospital Visit"
+                    string date "YYYY-MM-DD"
+                    string time "HH:MM AM/PM"
+                    string status "Scheduled | Confirmed | Completed | Cancelled"
+                    string notes
+                    timestamp created_at
+                    timestamp updated_at
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>5. Medicine and Prescription Collections</h2>
+        <p class="description">Tracks prescriptions and powers the daily medication reminder system.</p>
+        <div class="mermaid">
+            erDiagram
+                MEDICINES {
+                    string id PK "Unique Medicine ID"
+                    string patient_id FK "References USERS"
+                    string doctor_id FK "Nullable References Prescribing Doctor"
+                    string name "Drug Name"
+                    string dosage "e.g., 500mg"
+                    string frequency "e.g., Twice daily"
+                    array reminder_times "e.g., ['08:00', '20:00']"
+                    string reminderChannel "App Notification | SMS"
+                    string status "pending | taken | skipped"
+                    string notes
+                    timestamp created_at
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>6. Alert and Emergency Collections</h2>
+        <p class="description">Dual collections handling routine app alerts (like missed medicines) and critical SOS emergencies.</p>
+        <div class="mermaid">
+            erDiagram
+                ALERTS {
+                    string id PK
+                    string patientId FK
+                    string type "Missed Medicine | Warning"
+                    string patient_name
+                    string symptom
+                    string message
+                    string status "unread | read | Resolved"
+                    string priority "low | medium"
+                    timestamp timestamp
+                }
+            
+                EMERGENCIES {
+                    string id PK
+                    string patientId FK
+                    string type "sos | medical | accident"
+                    string status "emergency | resolved"
+                    string reason
+                    string priority "critical"
+                    string location "Lat/Long coordinates"
+                    timestamp timestamp
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>7. AI Health Assistant Collections</h2>
+        <p class="description">Stores the chat history context for the RAG-powered NVIDIA LLM, allowing it to remember past conversations.</p>
+        <div class="mermaid">
+            erDiagram
+                AI_CHAT_HISTORY {
+                    string session_id PK
+                    string patient_id FK
+                    array messages "JSON Array of Chat objects"
+                    timestamp last_interaction
+                }
+            
+                CHAT_MESSAGE {
+                    string role "user | model | system"
+                    string content "Message text"
+                    string context_used "Which RAG docs were injected"
+                    timestamp timestamp
+                }
+                
+                AI_CHAT_HISTORY ||--o{ CHAT_MESSAGE : "contains"
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>8. Health Reports Collections</h2>
+        <p class="description">Handles uploaded laboratory reports, prescriptions, and their OCR/AI-analyzed summaries.</p>
+        <div class="mermaid">
+            erDiagram
+                REPORTS {
+                    string id PK
+                    string patient_id FK
+                    string report_type "Blood Test | X-Ray | Prescription"
+                    string file_url "Firebase Storage URL"
+                    string ai_summary "Generated by Llama 3.1"
+                    string upload_date "YYYY-MM-DD"
+                    string status "processing | analyzed"
+                    timestamp created_at
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>9. Blockchain Audit Trail Collections</h2>
+        <p class="description">A decentralized ledger mirroring critical data to ensure medical records remain tamper-proof.</p>
+        <div class="mermaid">
+            erDiagram
+                BLOCKCHAIN_AUDIT {
+                    string hash PK "SHA-256 Block Hash"
+                    string previous_hash "Link to previous block"
+                    string patient_id FK
+                    string action_type "Appointment_Created | Medicine_Added"
+                    string encrypted_data "AES encrypted payload"
+                    string signature "Digital Signature"
+                    timestamp timestamp
+                }
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>10. Cache Layer (Redis)</h2>
+        <p class="description">High-performance, in-memory caching mapping used to limit rate requests and cache external API results (like OpenFDA and Data.gov.in).</p>
+        <div class="mermaid">
+            erDiagram
+                REDIS_CACHE {
+                    string key PK "e.g., openfda:drug:metformin"
+                    string value "JSON Stringified Data"
+                    int ttl "Time to live (seconds)"
+                }
+            
+                RATE_LIMIT_STORE {
+                    string key PK "e.g., rate_limit:192.168.1.1"
+                    int request_count
+                    int expiry_window
+                }
+        </div>
+    </div>
+</body>
+</html>

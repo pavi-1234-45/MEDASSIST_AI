@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Search, MapPin, Building2, Phone, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { apiClient } from '../../utils/apiClient';
 
 export default function HospitalSearch() {
   const { t } = useLanguage();
@@ -24,7 +25,7 @@ export default function HospitalSearch() {
     try {
       // Using our backend proxy to avoid exposing API keys
       const url = `/api/medical/datagov/resource/${HOSPITAL_RESOURCE_ID}?format=json&limit=20&filters[state_name]=${encodeURIComponent(query)}`;
-      const response = await fetch(url);
+      const response = await apiClient(url);
       
       if (!response.ok) {
         throw new Error('Failed to fetch from Data.gov.in proxy');

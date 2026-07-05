@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="medassist-er" name="MedAssist AI - Complete ER Diagram">
+    <mxGraphModel dx="2800" dy="2000" grid="1" gridSize="10" guides="1" tooltips="1"
+                  connect="1" arrows="1" fold="1" page="1" pageScale="1"
+                  pageWidth="3200" pageHeight="2400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 1: USER MANAGEMENT                  -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- User Entity -->
+        <mxCell id="user_header" value="User" style="shape=rectangle;fillColor=#2980B9;fontColor=#FFFFFF;strokeColor=#1A5276;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="50" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="user_attrs" value="user_id (PK)&#10;email&#10;display_name&#10;role&#10;phone&#10;language_preference&#10;is_active&#10;email_verified&#10;created_at&#10;updated_at&#10;last_login&#10;deleted" style="shape=rectangle;fillColor=#EBF5FB;fontColor=#1A5276;strokeColor=#1A5276;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="85" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 2: PATIENT HEALTH PROFILE           -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- PatientProfile Entity -->
+        <mxCell id="patient_header" value="PatientProfile" style="shape=rectangle;fillColor=#2980B9;fontColor=#FFFFFF;strokeColor=#1A5276;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="50" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="patient_attrs" value="patient_id (PK / FK → users)&#10;age&#10;gender&#10;date_of_birth&#10;blood_group&#10;condition&#10;allergies [ ]&#10;chronic_conditions [ ]&#10;assigned_doctor_id (FK)&#10;assigned_caregiver_id (FK)&#10;health_score&#10;adherence&#10;status&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EBF5FB;fontColor=#1A5276;strokeColor=#1A5276;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="460" y="85" width="280" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- EmergencyContact Entity -->
+        <mxCell id="emcontact_header" value="EmergencyContact" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="400" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="emcontact_attrs" value="contact_id (PK)&#10;patient_id (FK → patients)&#10;contact_name&#10;contact_phone&#10;relationship&#10;is_primary&#10;created_at" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="460" y="435" width="280" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 3: DOCTOR PROFESSIONAL              -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- DoctorProfile Entity -->
+        <mxCell id="doctor_header" value="DoctorProfile" style="shape=rectangle;fillColor=#2980B9;fontColor=#FFFFFF;strokeColor=#1A5276;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="50" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="doctor_attrs" value="doctor_id (PK / FK → users)&#10;name&#10;specialization&#10;hospital&#10;experience_years&#10;qualification&#10;license_number&#10;consultation_fee&#10;rating&#10;is_accepting_patients&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EBF5FB;fontColor=#1A5276;strokeColor=#1A5276;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="860" y="85" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- ClinicalNote Entity -->
+        <mxCell id="clinicalnote_header" value="ClinicalNote" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="400" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="clinicalnote_attrs" value="note_id (PK)&#10;doctor_id (FK → doctors)&#10;patient_id (FK → patients)&#10;appointment_id (FK)&#10;note_content&#10;diagnosis_codes [ ]&#10;prescriptions [ ]&#10;follow_up_date&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="860" y="435" width="280" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 4: CAREGIVER MONITORING             -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- CaregiverProfile Entity -->
+        <mxCell id="caregiver_header" value="CaregiverProfile" style="shape=rectangle;fillColor=#2980B9;fontColor=#FFFFFF;strokeColor=#1A5276;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="50" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="caregiver_attrs" value="caregiver_id (PK / FK → users)&#10;phone&#10;address&#10;relationship_to_patient&#10;total_patients_assigned&#10;alert_preference_channel&#10;is_available&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EBF5FB;fontColor=#1A5276;strokeColor=#1A5276;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="85" width="280" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- CaregiverPatientMapping (Junction) -->
+        <mxCell id="mapping_header" value="CaregiverPatientMapping" style="shape=rectangle;fillColor=#E67E22;fontColor=#FFFFFF;strokeColor=#CA6F1E;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="400" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="mapping_attrs" value="mapping_id (PK)&#10;caregiver_id (FK → caregivers)&#10;patient_id (FK → patients)&#10;relationship&#10;assigned_date&#10;is_active&#10;alert_enabled&#10;created_at" style="shape=rectangle;fillColor=#FDF2E9;fontColor=#CA6F1E;strokeColor=#CA6F1E;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="435" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 5: MEDICINE MANAGEMENT              -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- MedicineSchedule Entity -->
+        <mxCell id="medicine_header" value="MedicineSchedule" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="680" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="medicine_attrs" value="medicine_id (PK)&#10;patient_id (FK → patients)&#10;name&#10;dosage&#10;frequency&#10;schedule_slots [ ]&#10;reminder_times [ ]&#10;start_date&#10;end_date&#10;prescribing_doctor_id (FK)&#10;is_active&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="715" width="280" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- MedicineLog Entity -->
+        <mxCell id="medlog_header" value="MedicineLog" style="shape=rectangle;fillColor=#8E44AD;fontColor=#FFFFFF;strokeColor=#6C3483;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1000" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="medlog_attrs" value="log_id (PK)&#10;medicine_id (FK → medicines)&#10;patient_id (FK → patients)&#10;status [taken / missed]&#10;slot&#10;scheduled_time&#10;actual_time&#10;logged_by (FK → users)&#10;timestamp" style="shape=rectangle;fillColor=#F4ECF7;fontColor=#6C3483;strokeColor=#6C3483;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1035" width="280" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 6: APPOINTMENT BOOKING              -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- Appointment Entity -->
+        <mxCell id="appointment_header" value="Appointment" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="680" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="appointment_attrs" value="appointment_id (PK)&#10;patient_id (FK → patients)&#10;patient_name&#10;doctor_id (FK → doctors)&#10;doctor_name&#10;date&#10;time&#10;duration_minutes&#10;reason&#10;status&#10;notes&#10;follow_up_required&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="460" y="715" width="280" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 7: EMERGENCY SOS                    -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- SOSEvent Entity -->
+        <mxCell id="sos_header" value="SOSEvent" style="shape=rectangle;fillColor=#E74C3C;fontColor=#FFFFFF;strokeColor=#C0392B;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="680" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sos_attrs" value="sos_id (PK)&#10;patient_id (FK → patients)&#10;timestamp&#10;location_latitude&#10;location_longitude&#10;location_address&#10;status&#10;severity&#10;notified_contacts [ ]&#10;notified_doctors [ ]&#10;acknowledged_by (FK)&#10;resolved_by (FK)&#10;resolution_notes&#10;created_at" style="shape=rectangle;fillColor=#FDEDEC;fontColor=#C0392B;strokeColor=#C0392B;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="860" y="715" width="280" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 8: AI CHAT AND VOICE                -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- ChatSession Entity -->
+        <mxCell id="chat_header" value="ChatSession" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1000" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="chat_attrs" value="chat_id (PK)&#10;user_id (FK → users)&#10;language&#10;session_start&#10;session_end&#10;message_count&#10;model_used&#10;emergency_detected&#10;created_at" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1035" width="280" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- ChatMessage Sub-Entity -->
+        <mxCell id="chatmsg_header" value="ChatMessage" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1260" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="chatmsg_attrs" value="message_id (PK)&#10;chat_id (FK → chats)&#10;role [user / assistant / system]&#10;text&#10;sources [ ]&#10;rag_context_used&#10;emergency_flag&#10;timestamp" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1295" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- VoiceSession Entity -->
+        <mxCell id="voice_header" value="VoiceSession" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1260" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="voice_attrs" value="voice_id (PK)&#10;user_id (FK → users)&#10;language&#10;transcription&#10;ai_response&#10;model_used&#10;audio_duration_seconds&#10;whisper_confidence&#10;emergency_flag&#10;timestamp" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1295" width="280" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- RAGQueryLog Entity -->
+        <mxCell id="raglog_header" value="RAGQueryLog" style="shape=rectangle;fillColor=#8E44AD;fontColor=#FFFFFF;strokeColor=#6C3483;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1000" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="raglog_attrs" value="query_log_id (PK)&#10;chat_id (FK → chats)&#10;message_id&#10;query_text&#10;sources_queried [ ]&#10;sources_responded [ ]&#10;query_duration_ms&#10;cache_hit&#10;timestamp" style="shape=rectangle;fillColor=#F4ECF7;fontColor=#6C3483;strokeColor=#6C3483;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1035" width="280" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 9: NOTIFICATION ENGINE              -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- Notification Entity -->
+        <mxCell id="notif_header" value="Notification" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="680" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_attrs" value="notification_id (PK)&#10;recipient_id (FK → users)&#10;sender_id (FK → users)&#10;channel [push/sms/whatsapp/email]&#10;type&#10;title&#10;message&#10;priority&#10;is_delivered&#10;is_read&#10;created_at" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="715" width="280" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 10: ALERT MANAGEMENT                -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- Alert Entity -->
+        <mxCell id="alert_header" value="Alert" style="shape=rectangle;fillColor=#E67E22;fontColor=#FFFFFF;strokeColor=#CA6F1E;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="50" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="alert_attrs" value="alert_id (PK)&#10;type [Emergency/Missed Medicine/Warning]&#10;severity [Low/Medium/High/Critical]&#10;patient_id (FK → patients)&#10;patient_name&#10;symptom&#10;status [unread/read/Resolved]&#10;assigned_to (FK → users)&#10;resolved_by (FK)&#10;resolution_notes&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#FDF2E9;fontColor=#CA6F1E;strokeColor=#CA6F1E;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="85" width="280" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 11: REPORTS                         -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- HealthReport Entity -->
+        <mxCell id="report_header" value="HealthReport" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="400" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="report_attrs" value="report_id (PK)&#10;patient_id (FK → patients)&#10;type&#10;data (JSON)&#10;generated_by (FK → users)&#10;date_range_start&#10;date_range_end&#10;generated_at&#10;created_at&#10;deleted" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="435" width="280" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- AdherenceReport Entity -->
+        <mxCell id="adreport_header" value="AdherenceReport" style="shape=rectangle;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="680" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="adreport_attrs" value="adherence_report_id (PK)&#10;patient_id (FK → patients)&#10;period_start&#10;period_end&#10;total_scheduled&#10;total_taken&#10;total_missed&#10;adherence_percentage&#10;medicine_breakdown (JSON)&#10;generated_at" style="shape=rectangle;fillColor=#EAFAF1;fontColor=#1E8449;strokeColor=#1E8449;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="715" width="280" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 12: AUDIT AND COMPLIANCE            -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- AuditLog Entity -->
+        <mxCell id="audit_header" value="AuditLog" style="shape=rectangle;fillColor=#8E44AD;fontColor=#FFFFFF;strokeColor=#6C3483;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="1000" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_attrs" value="audit_id (PK)&#10;record_type&#10;record_id&#10;actor_id (FK → users)&#10;action [create/read/update/delete]&#10;data_hash (SHA-256)&#10;previous_hash (blockchain)&#10;block_hash&#10;block_index&#10;metadata (JSON)&#10;ip_address&#10;timestamp&#10;verified" style="shape=rectangle;fillColor=#F4ECF7;fontColor=#6C3483;strokeColor=#6C3483;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="1035" width="280" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- ConsentRecord Entity -->
+        <mxCell id="consent_header" value="ConsentRecord" style="shape=rectangle;fillColor=#8E44AD;fontColor=#FFFFFF;strokeColor=#6C3483;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="1310" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="consent_attrs" value="consent_id (PK)&#10;patient_id (FK → patients)&#10;consent_type&#10;granted_to&#10;details&#10;consent_hash (SHA-256)&#10;is_active&#10;granted_at&#10;expires_at&#10;revoked_at&#10;timestamp&#10;verified" style="shape=rectangle;fillColor=#F4ECF7;fontColor=#6C3483;strokeColor=#6C3483;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="1345" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- DataAccessLog Entity -->
+        <mxCell id="accesslog_header" value="DataAccessLog" style="shape=rectangle;fillColor=#8E44AD;fontColor=#FFFFFF;strokeColor=#6C3483;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1260" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="accesslog_attrs" value="access_log_id (PK)&#10;accessor_id (FK → users)&#10;accessor_role&#10;patient_id (FK → patients)&#10;data_type&#10;access_type [view/edit/export/delete]&#10;purpose&#10;timestamp&#10;ip_address" style="shape=rectangle;fillColor=#F4ECF7;fontColor=#6C3483;strokeColor=#6C3483;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1295" width="280" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- MODULE 13: SYSTEM CONFIGURATION            -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- SystemSetting Entity -->
+        <mxCell id="sysset_header" value="SystemSetting" style="shape=rectangle;fillColor=#34495E;fontColor=#FFFFFF;strokeColor=#2C3E50;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1000" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sysset_attrs" value="setting_id (PK)&#10;setting_key&#10;setting_value&#10;setting_type&#10;category&#10;description&#10;is_editable&#10;updated_by (FK → users)&#10;updated_at" style="shape=rectangle;fillColor=#EBEDEF;fontColor=#2C3E50;strokeColor=#2C3E50;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1035" width="280" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- LanguageLocale Entity -->
+        <mxCell id="locale_header" value="LanguageLocale" style="shape=rectangle;fillColor=#34495E;fontColor=#FFFFFF;strokeColor=#2C3E50;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1260" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="locale_attrs" value="locale_id (PK)&#10;language_code [en/hi/ta/kn/ml/te]&#10;language_name&#10;native_name&#10;locale_file_path&#10;is_active&#10;is_default" style="shape=rectangle;fillColor=#EBEDEF;fontColor=#2C3E50;strokeColor=#2C3E50;rounded=1;arcSize=5;fontSize=10;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1295" width="280" height="125" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- RELATIONSHIPS (Edges)                                  -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+
+        <!-- User → PatientProfile (1:1) -->
+        <mxCell id="rel_user_patient" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#2C3E50;strokeWidth=2;fontColor=#8E44AD;fontSize=11;fontStyle=3;labelBackgroundColor=#F5EEF8;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="patient_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → DoctorProfile (1:1) -->
+        <mxCell id="rel_user_doctor" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#2C3E50;strokeWidth=2;fontColor=#8E44AD;fontSize=11;fontStyle=3;labelBackgroundColor=#F5EEF8;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="doctor_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → CaregiverProfile (1:1) -->
+        <mxCell id="rel_user_caregiver" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#2C3E50;strokeWidth=2;fontColor=#8E44AD;fontSize=11;fontStyle=3;labelBackgroundColor=#F5EEF8;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="caregiver_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → EmergencyContact (1:M) -->
+        <mxCell id="rel_patient_emcontact" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="emcontact_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → MedicineSchedule (1:M) -->
+        <mxCell id="rel_patient_medicine" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="medicine_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MedicineSchedule → MedicineLog (1:M) -->
+        <mxCell id="rel_medicine_log" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#6C3483;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="medicine_attrs" target="medlog_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → Appointment (1:M) -->
+        <mxCell id="rel_patient_appt" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="appointment_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Doctor → Appointment (1:M) -->
+        <mxCell id="rel_doctor_appt" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1A5276;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="doctor_attrs" target="appointment_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Doctor → ClinicalNote (1:M) -->
+        <mxCell id="rel_doctor_note" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1A5276;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="doctor_attrs" target="clinicalnote_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → SOSEvent (1:M) -->
+        <mxCell id="rel_patient_sos" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#C0392B;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="sos_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Caregiver → CaregiverPatientMapping (1:M) -->
+        <mxCell id="rel_caregiver_mapping" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#CA6F1E;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="caregiver_attrs" target="mapping_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → ChatSession (1:M) -->
+        <mxCell id="rel_user_chat" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="chat_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ChatSession → ChatMessage (1:M) -->
+        <mxCell id="rel_chat_msg" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="chat_attrs" target="chatmsg_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → VoiceSession (1:M) -->
+        <mxCell id="rel_user_voice" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="voice_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ChatMessage → RAGQueryLog (1:1) -->
+        <mxCell id="rel_msg_rag" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#6C3483;strokeWidth=2;fontColor=#8E44AD;fontSize=11;fontStyle=3;labelBackgroundColor=#F5EEF8;endArrow=blockThin;endFill=1;" edge="1" source="chatmsg_attrs" target="raglog_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → Notification (1:M) -->
+        <mxCell id="rel_user_notif" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="notif_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → Alert (1:M) -->
+        <mxCell id="rel_patient_alert" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#CA6F1E;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="alert_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → HealthReport (1:M) -->
+        <mxCell id="rel_patient_report" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="report_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → AdherenceReport (1:M) -->
+        <mxCell id="rel_patient_adreport" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#1E8449;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="adreport_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → AuditLog (1:M) -->
+        <mxCell id="rel_user_audit" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#6C3483;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="audit_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Patient → ConsentRecord (1:M) -->
+        <mxCell id="rel_patient_consent" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#6C3483;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="patient_attrs" target="consent_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User → DataAccessLog (1:M) -->
+        <mxCell id="rel_user_accesslog" value="1 : M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#6C3483;strokeWidth=2;fontColor=#E74C3C;fontSize=11;fontStyle=3;labelBackgroundColor=#FDEDEC;endArrow=blockThin;endFill=1;" edge="1" source="user_attrs" target="accesslog_attrs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- LEGEND                                     -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="legend_bg" value="" style="shape=rectangle;fillColor=#FDFEFE;strokeColor=#BDC3C7;rounded=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1530" width="500" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" value="LEGEND" style="text;fontStyle=1;fontSize=13;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1540" width="100" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="" style="shape=rectangle;fillColor=#2980B9;strokeColor=#1A5276;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1575" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="Core Entity (User, Patient, Doctor, Caregiver)" style="text;fontSize=10;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="110" y="1572" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="" style="shape=rectangle;fillColor=#27AE60;strokeColor=#1E8449;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1598" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="Supporting Entity (Medicine, Appointment, Chat, Report)" style="text;fontSize=10;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="110" y="1595" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="" style="shape=rectangle;fillColor=#E67E22;strokeColor=#CA6F1E;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1621" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="Junction / Mapping Table (M:M relationships)" style="text;fontSize=10;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="110" y="1618" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="" style="shape=rectangle;fillColor=#8E44AD;strokeColor=#6C3483;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1575" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="Log / Audit Entity" style="text;fontSize=10;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1572" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" value="" style="shape=rectangle;fillColor=#E74C3C;strokeColor=#C0392B;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1598" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5t" value="Emergency Entity" style="text;fontSize=10;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1595" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6" value="" style="shape=rectangle;fillColor=#34495E;strokeColor=#2C3E50;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1621" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6t" value="System Configuration" style="text;fontSize=10;fillColor=none;strokeColor=none;fontColor=#2C3E50;align=left;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1618" width="150" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

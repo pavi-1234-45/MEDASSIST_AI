@@ -10,6 +10,9 @@ class AppointmentCreate(BaseModel):
     date: str = Field(..., description="ISO date string YYYY-MM-DD")
     time: str = Field(..., description="Time string e.g. '10:00 AM'")
     status: str = Field("Scheduled", description="Scheduled | Confirmed | Completed | Missed | Cancelled")
+    department: Optional[str] = None
+    mode: Optional[str] = None
+    notes: Optional[str] = None
 
     model_config = {"json_schema_extra": {"example": {
         "patient_id": "p1",
@@ -31,6 +34,10 @@ class AppointmentResponse(BaseModel):
     date: str
     time: str
     status: str = "Scheduled"
+    department: Optional[str] = None
+    mode: Optional[str] = None
+    notes: Optional[str] = None
+    created_by: Optional[str] = None
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
 

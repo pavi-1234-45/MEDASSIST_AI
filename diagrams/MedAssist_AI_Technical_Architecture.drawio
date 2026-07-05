@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="medassist-arch" name="MedAssist AI - Technical Architecture">
+    <mxGraphModel dx="3400" dy="2200" grid="1" gridSize="10" guides="1" tooltips="1"
+                  connect="1" arrows="1" fold="1" page="1" pageScale="1"
+                  pageWidth="4200" pageHeight="2000" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- TITLE BAR                                                         -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="title" value="MedAssist AI &#8212; Technical Architecture Diagram" style="text;fontSize=22;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1B4F72;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Left-to-Right Data Flow: Client &#8594; Presentation &#8594; API Gateway &#8594; Business Logic &#8594; Data &#8594; External Services" style="text;fontSize=12;fontStyle=2;fillColor=none;strokeColor=none;fontColor=#7F8C8D;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="55" width="900" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 1: CLIENT LAYER (Users / Devices)                           -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="layer1_bg" value="" style="rounded=1;arcSize=8;fillColor=#F8F9F9;strokeColor=#BDC3C7;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="300" height="830" as="geometry" />
+        </mxCell>
+        <mxCell id="layer1_title" value="CLIENT LAYER" style="text;fontSize=13;fontStyle=1;fillColor=#1B4F72;fontColor=#FFFFFF;rounded=1;arcSize=15;align=center;verticalAlign=middle;spacingLeft=5;spacingRight=5;" vertex="1" parent="1">
+          <mxGeometry x="100" y="110" width="180" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Patient -->
+        <mxCell id="user_patient" value="Patient" style="shape=mxgraph.basic.smiley;fillColor=#3498DB;fontColor=#FFFFFF;strokeColor=#2471A3;fontSize=11;fontStyle=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="80" y="180" width="50" height="50" as="geometry" />
+        </mxCell>
+        <!-- Doctor -->
+        <mxCell id="user_doctor" value="Doctor" style="shape=mxgraph.basic.smiley;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;fontSize=11;fontStyle=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="170" y="180" width="50" height="50" as="geometry" />
+        </mxCell>
+        <!-- Caregiver -->
+        <mxCell id="user_caregiver" value="Caregiver" style="shape=mxgraph.basic.smiley;fillColor=#E67E22;fontColor=#FFFFFF;strokeColor=#CA6F1E;fontSize=11;fontStyle=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="260" y="180" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Web Browser -->
+        <mxCell id="client_browser" value="Web Browser&#10;(Chrome / Firefox / Safari)" style="shape=mxgraph.cisco.computers_and_peripherals.web_browser;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=10;fontStyle=0;whiteSpace=wrap;align=center;verticalAlign=bottom;verticalLabelPosition=bottom;" vertex="1" parent="1">
+          <mxGeometry x="70" y="290" width="80" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Mobile Device -->
+        <mxCell id="client_mobile" value="Mobile Browser&#10;(Responsive PWA)" style="shape=mxgraph.android.phone2;fillColor=#D6EAF8;strokeColor=#2980B9;fontSize=10;whiteSpace=wrap;align=center;verticalAlign=bottom;verticalLabelPosition=bottom;" vertex="1" parent="1">
+          <mxGeometry x="200" y="290" width="45" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Voice Input -->
+        <mxCell id="client_voice" value="Voice Input&#10;(Whisper STT)" style="rounded=1;fillColor=#FADBD8;strokeColor=#E74C3C;fontSize=10;fontStyle=1;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="70" y="430" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- WhatsApp / IVR -->
+        <mxCell id="client_whatsapp" value="WhatsApp / IVR&#10;(SMS Gateway)" style="rounded=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=10;fontStyle=1;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="430" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SOS Trigger -->
+        <mxCell id="client_sos" value="SOS Emergency&#10;Trigger Button" style="rounded=1;fillColor=#E74C3C;fontColor=#FFFFFF;strokeColor=#C0392B;fontSize=10;fontStyle=1;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="120" y="510" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Multi-Language -->
+        <mxCell id="client_lang" value="Multilingual Support&#10;EN | HI | TA | KN | ML | TE" style="rounded=1;fillColor=#F5EEF8;strokeColor=#8E44AD;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="590" width="220" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Accessibility -->
+        <mxCell id="client_a11y" value="Accessibility Features&#10;High Contrast | Large Font | Screen Reader" style="rounded=1;fillColor=#EBEDEF;strokeColor=#566573;fontSize=9;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="650" width="220" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 2: PRESENTATION LAYER (React Frontend)                      -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="layer2_bg" value="" style="rounded=1;arcSize=8;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="100" width="350" height="830" as="geometry" />
+        </mxCell>
+        <mxCell id="layer2_title" value="PRESENTATION LAYER" style="text;fontSize=13;fontStyle=1;fillColor=#2980B9;fontColor=#FFFFFF;rounded=1;arcSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="470" y="110" width="250" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Tech Stack -->
+        <mxCell id="fe_stack" value="React 18 + Vite + React Router" style="rounded=1;fillColor=#2980B9;fontColor=#FFFFFF;strokeColor=#1A5276;fontSize=10;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="450" y="155" width="290" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Auth Module -->
+        <mxCell id="fe_auth" value="Auth Module&#10;(AuthContext.jsx)&#10;Firebase Auth&#10;Login / Register / Roles" style="rounded=1;fillColor=#FFFFFF;strokeColor=#2980B9;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="200" width="135" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Language Module -->
+        <mxCell id="fe_lang" value="i18n Module&#10;(LanguageContext.jsx)&#10;6 Languages&#10;EN HI TA KN ML TE" style="rounded=1;fillColor=#FFFFFF;strokeColor=#8E44AD;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="200" width="135" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Patient Dashboard -->
+        <mxCell id="fe_patient_dash" value="Patient Dashboard&#10;Health Score | Adherence&#10;Medicines | Alerts" style="rounded=1;fillColor=#D6EAF8;strokeColor=#2471A3;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="285" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Doctor Dashboard -->
+        <mxCell id="fe_doctor_dash" value="Doctor Dashboard&#10;Patient List | Emergencies&#10;Clinical Notes" style="rounded=1;fillColor=#D5F5E3;strokeColor=#1E8449;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="285" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Caregiver Dashboard -->
+        <mxCell id="fe_caregiver_dash" value="Caregiver Dashboard&#10;Patient Monitoring&#10;Alerts | Status" style="rounded=1;fillColor=#FDF2E9;strokeColor=#CA6F1E;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="355" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Admin Dashboard -->
+        <mxCell id="fe_admin_dash" value="Admin Dashboard&#10;System Settings&#10;User Management" style="rounded=1;fillColor=#F4ECF7;strokeColor=#6C3483;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="355" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- AI Chat Page -->
+        <mxCell id="fe_chat" value="AI Medical Chat&#10;(Chat.jsx)&#10;Text + Source Citations" style="rounded=1;fillColor=#FDEBD0;strokeColor=#E67E22;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="430" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Voice Assistant -->
+        <mxCell id="fe_voice" value="Voice Assistant&#10;(VoiceAssistant.jsx)&#10;Speech-to-Text" style="rounded=1;fillColor=#FADBD8;strokeColor=#E74C3C;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="430" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Medicine Page -->
+        <mxCell id="fe_medicine" value="Medicine Manager&#10;Schedules | Reminders&#10;Adherence Tracking" style="rounded=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="505" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Appointments -->
+        <mxCell id="fe_appointments" value="Appointments&#10;Book | Reschedule&#10;Calendar View" style="rounded=1;fillColor=#D6EAF8;strokeColor=#2471A3;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="505" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Emergency SOS -->
+        <mxCell id="fe_emergency" value="Emergency SOS&#10;(Emergency.jsx)&#10;GPS | Contacts | Alert" style="rounded=1;fillColor=#E74C3C;fontColor=#FFFFFF;strokeColor=#C0392B;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="580" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Reports -->
+        <mxCell id="fe_reports" value="Reports&#10;(Reports.jsx)&#10;Health Summary | PDF" style="rounded=1;fillColor=#EBEDEF;strokeColor=#566573;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="580" width="135" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- WhatsApp IVR -->
+        <mxCell id="fe_whatsapp" value="WhatsApp / IVR&#10;(WhatsAppIVR.jsx)" style="rounded=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="655" width="135" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Shared Components -->
+        <mxCell id="fe_shared" value="Shared: Layout.jsx | ErrorBoundary.jsx | AppInitializer.jsx" style="rounded=1;fillColor=#2980B9;fontColor=#FFFFFF;strokeColor=#1A5276;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="450" y="715" width="290" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- State Management -->
+        <mxCell id="fe_state" value="State: React Context API + Firebase SDK (v9 Modular)" style="rounded=1;fillColor=#1A5276;fontColor=#FFFFFF;strokeColor=#0E2F44;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="450" y="750" width="290" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 3: API GATEWAY + MIDDLEWARE                                 -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="layer3_bg" value="" style="rounded=1;arcSize=8;fillColor=#FEF9E7;strokeColor=#F39C12;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="100" width="280" height="830" as="geometry" />
+        </mxCell>
+        <mxCell id="layer3_title" value="API GATEWAY LAYER" style="text;fontSize=13;fontStyle=1;fillColor=#F39C12;fontColor=#FFFFFF;rounded=1;arcSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="885" y="110" width="210" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- FastAPI -->
+        <mxCell id="api_fastapi" value="FastAPI Server&#10;(Python 3.10+)&#10;Port 8000 | ASGI" style="rounded=1;fillColor=#F39C12;fontColor=#FFFFFF;strokeColor=#D68910;fontSize=11;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="160" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- CORS Middleware -->
+        <mxCell id="api_cors" value="CORS Middleware" style="rounded=1;fillColor=#FFFFFF;strokeColor=#F39C12;fontSize=9;fontStyle=1;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="230" width="105" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Auth Middleware -->
+        <mxCell id="api_auth_mid" value="Auth Middleware&#10;(Firebase Token)" style="rounded=1;fillColor=#FFFFFF;strokeColor=#E74C3C;fontSize=9;fontStyle=1;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="230" width="105" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Rate Limiter -->
+        <mxCell id="api_rate" value="Rate Limiter" style="rounded=1;fillColor=#FFFFFF;strokeColor=#8E44AD;fontSize=9;fontStyle=1;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="275" width="105" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Error Handler -->
+        <mxCell id="api_error" value="Error Handler" style="rounded=1;fillColor=#FFFFFF;strokeColor=#566573;fontSize=9;fontStyle=1;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="275" width="105" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- API Routes -->
+        <mxCell id="api_routes_title" value="REST API Routes (Routers)" style="text;fontSize=11;fontStyle=5;fillColor=none;strokeColor=none;fontColor=#D68910;align=center;" vertex="1" parent="1">
+          <mxGeometry x="880" y="318" width="220" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="route_ai" value="/api/ai/*&#10;Chat + Voice" style="rounded=1;fillColor=#FDEBD0;strokeColor=#E67E22;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="348" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_patients" value="/api/patients/*&#10;Profile + Health" style="rounded=1;fillColor=#D6EAF8;strokeColor=#2471A3;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="348" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_doctors" value="/api/doctors/*&#10;Profile + Slots" style="rounded=1;fillColor=#D5F5E3;strokeColor=#1E8449;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="395" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_medicines" value="/api/medicines/*&#10;Schedule + Logs" style="rounded=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="395" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_appts" value="/api/appointments/*&#10;Book + Status" style="rounded=1;fillColor=#D6EAF8;strokeColor=#2471A3;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="442" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_alerts" value="/api/alerts/*&#10;Create + Resolve" style="rounded=1;fillColor=#FDF2E9;strokeColor=#CA6F1E;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="442" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_medical" value="/api/medical/*&#10;Drug + ICD Search" style="rounded=1;fillColor=#FDEBD0;strokeColor=#E67E22;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="490" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_reports" value="/api/reports/*&#10;Health Reports" style="rounded=1;fillColor=#EBEDEF;strokeColor=#566573;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="490" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_blockchain" value="/api/blockchain/*&#10;Audit Chain" style="rounded=1;fillColor=#F4ECF7;strokeColor=#6C3483;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="538" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_users" value="/api/users/*&#10;Auth + Profile" style="rounded=1;fillColor=#D6EAF8;strokeColor=#2980B9;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="995" y="538" width="105" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="route_health" value="/api/health&#10;Server Status" style="rounded=1;fillColor=#D5F5E3;strokeColor=#27AE60;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="935" y="590" width="105" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Deployment -->
+        <mxCell id="api_deploy" value="Deployment: Vercel Serverless (api/) + Render (backend/)" style="rounded=1;fillColor=#D68910;fontColor=#FFFFFF;strokeColor=#B7950B;fontSize=9;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="640" width="220" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 4: BUSINESS LOGIC LAYER (Services)                          -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="layer4_bg" value="" style="rounded=1;arcSize=8;fillColor=#F4ECF7;strokeColor=#8E44AD;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="100" width="400" height="830" as="geometry" />
+        </mxCell>
+        <mxCell id="layer4_title" value="BUSINESS LOGIC LAYER" style="text;fontSize=13;fontStyle=1;fillColor=#8E44AD;fontColor=#FFFFFF;rounded=1;arcSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="110" width="260" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- AI Service -->
+        <mxCell id="svc_ai" value="AI Service&#10;(ai_service.py)&#10;&#8226; Chat processing&#10;&#8226; Emergency detection&#10;&#8226; System prompt injection&#10;&#8226; Response formatting" style="rounded=1;fillColor=#FFFFFF;strokeColor=#E67E22;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="160" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- AI Client -->
+        <mxCell id="svc_ai_client" value="AI Client&#10;(ai_client.py)&#10;&#8226; NVIDIA NIM API&#10;&#8226; OpenAI SDK wrapper&#10;&#8226; Retry logic&#10;&#8226; Model routing" style="rounded=1;fillColor=#FFFFFF;strokeColor=#E67E22;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1415" y="160" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- RAG Pipeline -->
+        <mxCell id="svc_rag" value="RAG Pipeline&#10;(pipeline.py)&#10;&#8226; WHO EML lookup (local)&#10;&#8226; OpenFDA drug labels&#10;&#8226; RxNorm drug IDs&#10;&#8226; Data.gov.in Indian meds&#10;&#8226; ICD-11 classification&#10;&#8226; MedlinePlus / Wikipedia&#10;&#8226; Redis caching" style="rounded=1;fillColor=#FDEBD0;strokeColor=#E67E22;fontSize=9;fontStyle=1;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="280" width="175" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- EML Knowledge Base -->
+        <mxCell id="svc_eml" value="EML Knowledge Base&#10;(eml_knowledge.py)&#10;1,738 WHO medicines&#10;Local JSON indexed" style="rounded=1;fillColor=#FDEBD0;strokeColor=#D68910;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="280" width="170" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Medi Service -->
+        <mxCell id="svc_medi" value="Medi Service&#10;(medi_service.py)&#10;&#8226; ICD-11 API client&#10;&#8226; OAuth token mgmt&#10;&#8226; Disease classification" style="rounded=1;fillColor=#FFFFFF;strokeColor=#8E44AD;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="365" width="170" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Blockchain Service -->
+        <mxCell id="svc_blockchain" value="Blockchain Service&#10;(blockchain.py)&#10;&#8226; SHA-256 hashing&#10;&#8226; Block chaining&#10;&#8226; Immutable audit trail&#10;&#8226; Integrity verification" style="rounded=1;fillColor=#FFFFFF;strokeColor=#6C3483;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="455" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Notification Engine -->
+        <mxCell id="svc_notif" value="Notification Engine&#10;(engine.py)&#10;&#8226; Push notifications&#10;&#8226; SMS / WhatsApp / IVR&#10;&#8226; Medicine reminders&#10;&#8226; SOS alerts" style="rounded=1;fillColor=#FFFFFF;strokeColor=#E74C3C;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="465" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Business Rules -->
+        <mxCell id="svc_rules" value="Business Rules Engine&#10;&#8226; Status transitions (Appointment, SOS, Alert)&#10;&#8226; Adherence calculation&#10;&#8226; Health score computation&#10;&#8226; RBAC enforcement&#10;&#8226; Data validation" style="rounded=1;fillColor=#F4ECF7;strokeColor=#8E44AD;fontSize=9;fontStyle=1;whiteSpace=wrap;align=left;spacingLeft=8;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="580" width="355" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Repositories -->
+        <mxCell id="svc_repos" value="Repository Layer: patients.py | doctors.py | medicines.py | alerts.py | appointments.py | reports.py" style="rounded=1;fillColor=#8E44AD;fontColor=#FFFFFF;strokeColor=#6C3483;fontSize=9;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="690" width="355" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 5: DATA LAYER                                               -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="layer5_bg" value="" style="rounded=1;arcSize=8;fillColor=#EAFAF1;strokeColor=#27AE60;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1690" y="100" width="280" height="830" as="geometry" />
+        </mxCell>
+        <mxCell id="layer5_title" value="DATA LAYER" style="text;fontSize=13;fontStyle=1;fillColor=#27AE60;fontColor=#FFFFFF;rounded=1;arcSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1750" y="110" width="160" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore -->
+        <mxCell id="db_firestore" value="Google Cloud Firestore&#10;(NoSQL Document DB)" style="shape=cylinder3;fillColor=#F39C12;fontColor=#FFFFFF;strokeColor=#D68910;fontSize=11;fontStyle=1;whiteSpace=wrap;align=center;size=12;" vertex="1" parent="1">
+          <mxGeometry x="1730" y="160" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Collections List -->
+        <mxCell id="db_collections" value="Collections (28 total)&#10;&#8226; users&#10;&#8226; patients&#10;&#8226; doctors&#10;&#8226; caregivers&#10;&#8226; medicines&#10;&#8226; medicine_logs&#10;&#8226; appointments&#10;&#8226; sos_events&#10;&#8226; chats / messages&#10;&#8226; alerts&#10;&#8226; notifications&#10;&#8226; reports&#10;&#8226; audit_logs&#10;&#8226; consent_records&#10;&#8226; system_settings" style="rounded=1;fillColor=#FFFFFF;strokeColor=#27AE60;fontSize=9;whiteSpace=wrap;align=left;spacingLeft=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="240" width="210" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- Firebase Auth -->
+        <mxCell id="db_firebase_auth" value="Firebase Authentication&#10;Email / Password&#10;Token Management" style="shape=cylinder3;fillColor=#E74C3C;fontColor=#FFFFFF;strokeColor=#C0392B;fontSize=10;fontStyle=1;whiteSpace=wrap;align=center;size=12;" vertex="1" parent="1">
+          <mxGeometry x="1730" y="530" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Redis Cache -->
+        <mxCell id="db_redis" value="Redis Cache&#10;RAG Response Cache&#10;Session Cache&#10;TTL-based Expiry" style="shape=cylinder3;fillColor=#E74C3C;fontColor=#FFFFFF;strokeColor=#C0392B;fontSize=10;fontStyle=1;whiteSpace=wrap;align=center;size=12;" vertex="1" parent="1">
+          <mxGeometry x="1730" y="615" width="200" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore Security Rules -->
+        <mxCell id="db_security" value="Firestore Security Rules&#10;RBAC (Role-Based Access Control)&#10;Soft Delete Enforcement" style="rounded=1;fillColor=#27AE60;fontColor=#FFFFFF;strokeColor=#1E8449;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="710" width="220" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- Composite Indexes -->
+        <mxCell id="db_indexes" value="Composite Indexes (15)&#10;Optimised Query Performance" style="rounded=1;fillColor=#D5F5E3;strokeColor=#1E8449;fontSize=9;whiteSpace=wrap;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="775" width="220" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LAYER 6: EXTERNAL SERVICES                                        -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="layer6_bg" value="" style="rounded=1;arcSize=8;fillColor=#FDEDEC;strokeColor=#E74C3C;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="2050" y="100" width="330" height="830" as="geometry" />
+        </mxCell>
+        <mxCell id="layer6_title" value="EXTERNAL SERVICES" style="text;fontSize=13;fontStyle=1;fillColor=#E74C3C;fontColor=#FFFFFF;rounded=1;arcSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="2110" y="110" width="210" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- AI / LLM APIs -->
+        <mxCell id="ext_ai_title" value="AI / LLM Services" style="text;fontSize=11;fontStyle=5;fillColor=none;strokeColor=none;fontColor=#C0392B;align=center;" vertex="1" parent="1">
+          <mxGeometry x="2120" y="150" width="190" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_nvidia" value="NVIDIA NIM API&#10;meta/llama-3.1-8b-instruct&#10;openai/gpt-oss-120b" style="rounded=1;fillColor=#FFFFFF;strokeColor=#76D7C4;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="175" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_whisper" value="OpenAI Whisper API&#10;Speech-to-Text (6 languages)" style="rounded=1;fillColor=#FFFFFF;strokeColor=#76D7C4;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="235" width="270" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Medical Data APIs -->
+        <mxCell id="ext_med_title" value="Medical Data APIs" style="text;fontSize=11;fontStyle=5;fillColor=none;strokeColor=none;fontColor=#C0392B;align=center;" vertex="1" parent="1">
+          <mxGeometry x="2120" y="285" width="190" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_openfda" value="OpenFDA API&#10;Drug labels, adverse events, warnings" style="rounded=1;fillColor=#FFFFFF;strokeColor=#3498DB;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="310" width="270" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_who_icd" value="WHO ICD-11 API&#10;Disease classification and coding" style="rounded=1;fillColor=#FFFFFF;strokeColor=#3498DB;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="355" width="270" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_rxnorm" value="RxNorm API (NIH/NLM)&#10;Drug identification via RxCUI" style="rounded=1;fillColor=#FFFFFF;strokeColor=#3498DB;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="400" width="270" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_datagov" value="Data.gov.in API&#10;Jan Aushadhi generics, Indian hospitals" style="rounded=1;fillColor=#FFFFFF;strokeColor=#3498DB;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="445" width="270" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_medline" value="MedlinePlus / Wikipedia&#10;General medical encyclopedia" style="rounded=1;fillColor=#FFFFFF;strokeColor=#3498DB;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="490" width="270" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Communication APIs -->
+        <mxCell id="ext_comm_title" value="Communication APIs" style="text;fontSize=11;fontStyle=5;fillColor=none;strokeColor=none;fontColor=#C0392B;align=center;" vertex="1" parent="1">
+          <mxGeometry x="2120" y="540" width="190" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_fcm" value="Firebase Cloud Messaging (FCM)&#10;Push notifications" style="rounded=1;fillColor=#FFFFFF;strokeColor=#F39C12;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="565" width="270" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_twilio" value="Twilio / MSG91&#10;SMS + WhatsApp + IVR" style="rounded=1;fillColor=#FFFFFF;strokeColor=#F39C12;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="610" width="270" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Infrastructure -->
+        <mxCell id="ext_infra_title" value="Cloud Infrastructure" style="text;fontSize=11;fontStyle=5;fillColor=none;strokeColor=none;fontColor=#C0392B;align=center;" vertex="1" parent="1">
+          <mxGeometry x="2120" y="660" width="190" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_vercel" value="Vercel&#10;Frontend CDN + Serverless API" style="rounded=1;fillColor=#FFFFFF;strokeColor=#2C3E50;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="685" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_render" value="Render&#10;Backend Docker Deploy" style="rounded=1;fillColor=#FFFFFF;strokeColor=#2C3E50;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2220" y="685" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_docker" value="Docker + docker-compose&#10;Container Orchestration" style="rounded=1;fillColor=#FFFFFF;strokeColor=#2980B9;fontSize=9;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="740" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_gcp" value="Google Cloud Platform&#10;Firestore | Auth | Storage | FCM" style="rounded=1;fillColor=#4285F4;fontColor=#FFFFFF;strokeColor=#3367D6;fontSize=9;fontStyle=1;whiteSpace=wrap;align=center;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="785" width="270" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- FLOW ARROWS (Left to Right)                                       -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+        <!-- Client → Presentation -->
+        <mxCell id="flow_1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2980B9;strokeWidth=3;fontColor=#2980B9;fontSize=10;fontStyle=1;endArrow=blockThin;endFill=1;labelBackgroundColor=#EBF5FB;" edge="1" source="client_browser" target="fe_auth" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_1b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2980B9;strokeWidth=2;endArrow=blockThin;endFill=1;" edge="1" source="client_mobile" target="fe_lang" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_1c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E74C3C;strokeWidth=2;endArrow=blockThin;endFill=1;" edge="1" source="client_sos" target="fe_emergency" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_1d" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E67E22;strokeWidth=2;endArrow=blockThin;endFill=1;" edge="1" source="client_voice" target="fe_voice" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Presentation → API Gateway -->
+        <mxCell id="flow_2" value="REST API&#10;JSON / JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F39C12;strokeWidth=3;fontColor=#D68910;fontSize=10;fontStyle=1;endArrow=blockThin;endFill=1;labelBackgroundColor=#FEF9E7;" edge="1" source="fe_state" target="api_fastapi" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway → Business Logic -->
+        <mxCell id="flow_3" value="Service Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#8E44AD;strokeWidth=3;fontColor=#6C3483;fontSize=10;fontStyle=1;endArrow=blockThin;endFill=1;labelBackgroundColor=#F4ECF7;" edge="1" source="route_ai" target="svc_ai" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Business Logic → Data Layer -->
+        <mxCell id="flow_4" value="Firestore SDK" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#27AE60;strokeWidth=3;fontColor=#1E8449;fontSize=10;fontStyle=1;endArrow=blockThin;endFill=1;labelBackgroundColor=#EAFAF1;" edge="1" source="svc_repos" target="db_firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Data Layer → External -->
+        <mxCell id="flow_5" value="API Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E74C3C;strokeWidth=3;fontColor=#C0392B;fontSize=10;fontStyle=1;endArrow=blockThin;endFill=1;labelBackgroundColor=#FDEDEC;" edge="1" source="db_firestore" target="ext_gcp" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- RAG → External APIs -->
+        <mxCell id="flow_rag_ext" value="RAG Queries" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E67E22;strokeWidth=2;fontColor=#D68910;fontSize=9;fontStyle=3;endArrow=blockThin;endFill=1;dashed=1;labelBackgroundColor=#FEF9E7;" edge="1" source="svc_rag" target="ext_openfda" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- AI Client → NVIDIA -->
+        <mxCell id="flow_ai_nvidia" value="LLM Inference" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#76D7C4;strokeWidth=2;fontColor=#1ABC9C;fontSize=9;fontStyle=3;endArrow=blockThin;endFill=1;dashed=1;labelBackgroundColor=#E8F8F5;" edge="1" source="svc_ai_client" target="ext_nvidia" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Notification → FCM/Twilio -->
+        <mxCell id="flow_notif_ext" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F39C12;strokeWidth=2;endArrow=blockThin;endFill=1;dashed=1;" edge="1" source="svc_notif" target="ext_fcm" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LEGEND                                                            -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <mxCell id="legend_bg" value="" style="rounded=1;arcSize=8;fillColor=#FDFEFE;strokeColor=#BDC3C7;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="2450" y="100" width="300" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" value="LEGEND" style="text;fontSize=13;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#1B4F72;align=center;" vertex="1" parent="1">
+          <mxGeometry x="2530" y="108" width="100" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_l1" value="" style="rounded=1;fillColor=#EBF5FB;strokeColor=#2980B9;" vertex="1" parent="1">
+          <mxGeometry x="2470" y="140" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_l1t" value="Presentation Layer (React + Vite)" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2500" y="137" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_l2" value="" style="rounded=1;fillColor=#FEF9E7;strokeColor=#F39C12;" vertex="1" parent="1">
+          <mxGeometry x="2470" y="165" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_l2t" value="API Gateway (FastAPI + Middleware)" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2500" y="162" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_l3" value="" style="rounded=1;fillColor=#F4ECF7;strokeColor=#8E44AD;" vertex="1" parent="1">
+          <mxGeometry x="2470" y="190" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_l3t" value="Business Logic (Services + RAG)" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2500" y="187" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_l4" value="" style="rounded=1;fillColor=#EAFAF1;strokeColor=#27AE60;" vertex="1" parent="1">
+          <mxGeometry x="2470" y="215" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_l4t" value="Data Layer (Firestore + Redis)" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2500" y="212" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_l5" value="" style="rounded=1;fillColor=#FDEDEC;strokeColor=#E74C3C;" vertex="1" parent="1">
+          <mxGeometry x="2470" y="240" width="20" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_l5t" value="External Services (APIs + Cloud)" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2500" y="237" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_arrow1" value="" style="endArrow=blockThin;endFill=1;strokeColor=#2C3E50;strokeWidth=3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2470" y="278" as="sourcePoint" />
+            <mxPoint x="2520" y="278" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_arrow1t" value="Synchronous data flow" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2530" y="270" width="180" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg_arrow2" value="" style="endArrow=blockThin;endFill=1;strokeColor=#2C3E50;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2470" y="300" as="sourcePoint" />
+            <mxPoint x="2520" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_arrow2t" value="Async / External API call" style="text;fontSize=9;fillColor=none;strokeColor=none;fontColor=#2C3E50;" vertex="1" parent="1">
+          <mxGeometry x="2530" y="292" width="180" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Tech Stack Footer -->
+        <mxCell id="footer_bg" value="" style="rounded=1;arcSize=5;fillColor=#1B4F72;strokeColor=#0E2F44;" vertex="1" parent="1">
+          <mxGeometry x="40" y="960" width="2340" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="footer_text" value="Tech Stack: React 18 | Vite | React Router | Firebase Auth | FastAPI | Python 3.10 | Firestore | Redis | NVIDIA NIM | OpenAI Whisper | Docker | Vercel | Render | OpenFDA | WHO ICD-11 | RxNorm" style="text;fontSize=11;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#FFFFFF;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="963" width="2260" height="28" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

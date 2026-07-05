@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { dbService } from '../utils/firebaseService';
+import { apiClient } from '../utils/apiClient';
 import { Mic, Square, Volume2, AlertTriangle, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -14,6 +15,7 @@ export default function VoiceAssistant() {
   const [transcript, setTranscript] = useState('');
   const [botResponse, setBotResponse] = useState('');
   const [isEmergency, setIsEmergency] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const recognitionRef = useRef(null);
 
@@ -49,9 +51,7 @@ export default function VoiceAssistant() {
 
       recognitionRef.current.onend = () => {
         setIsListening(false);
-        if (transcript.trim()) {
-          handleProcessVoice(transcript);
-        }
+        // We'll process in the effect below
       };
     }
 
@@ -61,7 +61,16 @@ export default function VoiceAssistant() {
       }
       window.speechSynthesis.cancel();
     };
-  }, [transcript]);
+  }, []);
+
+  // Process voice when listening stops and there's a transcript
+  const lastProcessedRef = useRef('');
+  useEffect(() => {
+    if (!isListening && transcript.trim() && transcript !== lastProcessedRef.current) {
+      lastProcessedRef.current = transcript;
+      handleProcessVoice(transcript);
+    }
+  }, [isListening]);
 
   const toggleListening = () => {
     if (isListening) {
@@ -70,6 +79,8 @@ export default function VoiceAssistant() {
       setTranscript('');
       setBotResponse('');
       setIsEmergency(false);
+      setIsLoading(false);
+      lastProcessedRef.current = '';
       window.speechSynthesis.cancel();
       if (recognitionRef.current) {
         recognitionRef.current.lang = voiceLangMap[selectedLanguage] || 'en-IN';
@@ -78,6 +89,29 @@ export default function VoiceAssistant() {
       } else {
         alert("Speech recognition is not supported in this browser. Please use Chrome.");
       }
+    }
+  };
+
+  const callAIVoiceBackend = async (inputText) => {
+    try {
+      const response = await apiClient('/ai/voice-assistant', {
+        method: 'POST',
+        body: JSON.stringify({
+          message: inputText,
+          language: selectedLanguage || 'en',
+          role: currentUser?.role || 'patient'
+        })
+      });
+
+      const data = await response.json();
+      return {
+        isEmergency: data.emergency || false,
+        text: data.reply
+      };
+    } catch (error) {
+      console.error('AI voice backend error:', error);
+      // Fall back to local mock if backend is unreachable
+      return processMockAiResponse(inputText);
     }
   };
 
@@ -117,10 +151,31 @@ export default function VoiceAssistant() {
   };
 
   const handleProcessVoice = async (textToProcess) => {
-    const response = await processMockAiResponse(textToProcess);
-    setBotResponse(response.text);
-    setIsEmergency(response.isEmergency);
-    speakText(response.text);
+    setIsLoading(true);
+    setBotResponse('Thinking...');
+    
+    try {
+      const response = await callAIVoiceBackend(textToProcess);
+
+      // If emergency, create alert
+      if (response.isEmergency && currentUser?.uid) {
+        await dbService.set(`emergencies/${currentUser.uid}/${Date.now()}`, {
+          patientId: currentUser.uid,
+          status: "emergency",
+          reason: textToProcess,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      setBotResponse(response.text);
+      setIsEmergency(response.isEmergency);
+      speakText(response.text);
+    } catch (error) {
+      console.error(error);
+      setBotResponse("Sorry, I couldn't process your request. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCall112 = () => {
@@ -147,7 +202,7 @@ export default function VoiceAssistant() {
               {isListening ? <Square size={40} className="fill-current" /> : <Mic size={48} />}
             </motion.div>
             <p className="mt-6 font-bold text-gray-600">
-              {isListening ? "Listening... Tap to stop" : "Tap the mic to speak"}
+              {isListening ? "Listening... Tap to stop" : isLoading ? "Processing..." : "Tap the mic to speak"}
             </p>
           </div>
 
@@ -202,7 +257,7 @@ export default function VoiceAssistant() {
           </div>
 
           {/* Text input fallback */}
-          {!isListening && !botResponse && (
+          {!isListening && !botResponse && !isLoading && (
             <div className="mt-8 w-full">
               <p className="text-sm text-gray-400 mb-3">Or type your symptoms:</p>
               <form onSubmit={(e) => {

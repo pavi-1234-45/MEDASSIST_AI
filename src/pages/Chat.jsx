@@ -3,17 +3,19 @@ import Layout from '../components/Layout';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { dbService } from '../utils/firebaseService';
+import { apiClient } from '../utils/apiClient';
 import { Send, Phone, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Chat() {
-  const { t } = useLanguage();
+  const { t, selectedLanguage } = useLanguage();
   const { currentUser } = useAuth();
   
   const [messages, setMessages] = useState([
     { id: '1', text: "Hello! I am MedAssist AI. How can I help you today?", isBot: true, isEmergency: false }
   ]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -23,6 +25,34 @@ export default function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const callAIBackend = async (inputText) => {
+    try {
+      const history = messages
+        .filter(m => !m.isEmergency)
+        .map(m => ({ role: m.isBot ? 'assistant' : 'user', text: m.text }));
+
+      const response = await apiClient('/ai/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          message: inputText,
+          language: selectedLanguage || 'en',
+          role: currentUser?.role || 'patient',
+          history: history
+        })
+      });
+
+      const data = await response.json();
+      return {
+        isEmergency: data.emergency || false,
+        text: data.reply
+      };
+    } catch (error) {
+      console.error('AI backend error:', error);
+      // Fall back to local mock if backend is unreachable
+      return processMockAiResponse(inputText);
+    }
+  };
 
   const processMockAiResponse = async (inputText) => {
     const text = inputText.toLowerCase();
@@ -59,16 +89,27 @@ export default function Chat() {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = { id: Date.now().toString(), text: input, isBot: false };
     setMessages(prev => [...prev, userMessage]);
     const currentInput = input;
     setInput('');
+    setIsLoading(true);
 
-    // Simulate typing delay
-    setTimeout(async () => {
-      const response = await processMockAiResponse(currentInput);
+    try {
+      const response = await callAIBackend(currentInput);
+
+      // If emergency detected, create alert and show emergency card
+      if (response.isEmergency && currentUser?.uid) {
+        await dbService.set(`emergencies/${currentUser.uid}/${Date.now()}`, {
+          patientId: currentUser.uid,
+          status: "emergency",
+          reason: currentInput,
+          timestamp: new Date().toISOString()
+        });
+      }
+
       const botMessage = {
         id: (Date.now() + 1).toString(),
         text: response.text,
@@ -76,7 +117,18 @@ export default function Chat() {
         isEmergency: response.isEmergency
       };
       setMessages(prev => [...prev, botMessage]);
-    }, 1000);
+    } catch (error) {
+      console.error(error);
+      const botMessage = {
+        id: (Date.now() + 1).toString(),
+        text: "Sorry, I'm having trouble connecting. Please try again.",
+        isBot: true,
+        isEmergency: false
+      };
+      setMessages(prev => [...prev, botMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCall112 = () => {
@@ -155,6 +207,13 @@ export default function Chat() {
               </div>
             </motion.div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="max-w-[80%] p-4 rounded-2xl bg-white border border-gray-200 text-gray-500 rounded-tl-sm animate-pulse">
+                Thinking...
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
@@ -173,10 +232,11 @@ export default function Chat() {
               placeholder="Type your symptoms here..."
               className="flex-1 max-h-32 min-h-[56px] resize-none px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-medical-blue focus:border-medical-blue outline-none transition-all text-sm custom-scrollbar"
               rows="1"
+              disabled={isLoading}
             />
             <button 
               type="submit" 
-              disabled={!input.trim()}
+              disabled={!input.trim() || isLoading}
               className="w-14 h-14 bg-medical-blue text-white rounded-2xl flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors shadow-lg shadow-medical-blue/20"
             >
               <Send size={20} className="ml-1" />

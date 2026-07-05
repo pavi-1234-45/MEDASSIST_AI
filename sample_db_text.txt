@@ -1,0 +1,355 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Sample Document for Appointment Booking for Small Businesses 
+ 
+ 
+ 
+A sample document showing Database design for an Appointment Booking Application for small businesses or 
+Professionals like Doctors, Lawyers, Spas, Restaurants etc. 
+ 
+ 
+Entity-Relationship Diagram 
+Contents: 
+❖ Listing Entites 
+❖ Listing Attributes 
+❖ RelationShips 
+❖ Database Design 
+❖ Generating Tables 
+ 
+ 
+ 
+ 
+ 
+ 
+❖ List Of Entities: 
+1. Admin Module 
+• Account_type 
+• Account 
+• Terms &conditions 
+• SecurityQuestions 
+• Email_notification 
+• Account_status 
+• DefaultSettings 
+• Social media. 
+2. Business Profile Management 
+• BusinessCategory 
+• Business_details 
+• Profile_type 
+• Business_workingdays 
+• Business_working hours. 
+• Holiday calendar 
+• Staff_member 
+• User_access_level 
+• Service category 
+• Service sub_category 
+• Service_details 
+• Location 
+• Locality 
+• City 
+• State 
+• Country 
+• Location coordinates 
+• ReservedWords 
+• ActivityFeed 
+• Flag_provision 
+3.Appointment Booking: 
+• Appointment_references 
+• Appointment_Slots 
+• Appointtment_details 
+• Advance_days 
+• Appointment_policy 
+• Remainder_policy 
+4.CustomerRating 
+• Favoritebusiness 
+• Parameters 
+• Ratingscale 
+• Obscene or reserved words 
+ 
+ 
+ 
+❖ List Of Attributes: 
+1. Admin module 
+• Account_Type 
+• Account_Type_id  
+• Account_Type_name(type of user business/individual) 
+• Account Provisioning 
+• Username 
+• Password 
+• E-mail address 
+• Phone number 
+• Terms and conditions provisioning 
+• Terms and conditions_type_ID 
+• Terms and conditions_name 
+• Terms and Conditions description 
+• Security question provision 
+• Security question_id 
+• Security question 
+• Description 
+• Email notification 
+• Admin Email_id_address 
+• Admin-emailid_password 
+• SMTP_address 
+• Welcome_Email_content_id 
+• Welcome_Email_content_name 
+• Welcome_Email_content_description 
+•  
+• Account Status Provisioning 
+• Account status_id 
+• Account status_name (suspended/active/deleted) 
+• Description 
+• Default settings 
+• Default setting_id  
+• Default setting_name (heading one/two) 
+• font size 
+• colour 
+• resolution 
+• date format 
+• time format 
+• Social Media Provisioning 
+• Social-Media_id 
+• Social_Media_name(fb/twitter/) 
+• Social_Media_URL 
+• Description 
+• Username 
+• Password 
+ 
+2.Business profile management 
+• Business Provisioning 
+• Business Type_ID (category) 
+• Business_Type 
+Business subcategory 
+• Business_subtype_id (subcategory) 
+• Business_subtype_name 
+• Description 
+• Profile Type Provisioning 
+• Profile type_id  
+• Profile type_name (basic/premium) 
+• Description 
+• Business profile provisioning 
+• Business id 
+• Business Name 
+• Business Tag line 
+• Business email-id (can be different from registered email) 
+• Business phone 1 
+• Business phone 2 
+• Business Address (in addition to assigning location/city) 
+• Business logo 
+• Contact person 
+• Business Working Days 
+• Business Working day-id 
+• Business Working day_name 
+ 
+• Business Working Hours 
+• Opening hours 
+• Closing hours 
+• Break time slot 
+• Holiday Calendar 
+• Calender_url 
+• Staff member provisioning 
+• Staffmember_id 
+• Staffmember_name 
+• Staff_profile pic 
+• Staff_phone_number 
+• Staff_emailid 
+• User Access Provisioning 
+• User_Type_id 
+• User_type_name 
+• Description  
+• Service category Provisioning 
+• Service category_id 
+• Service category_name 
+• Service sub_category_id 
+• Service sub_category_name 
+• Service Provisioning 
+• Service id 
+• Service name 
+• Short description 
+• Service short description 
+• Service cost 
+• Currency provisioning (to define cost) 
+• Time for service 
+• Buffer time before service 
+• Buffer time after service 
+• Location provisioning 
+• Location_Webservice_id 
+• Location_Webservice_url 
+• Location_Webservice_description 
+• Locality provisioning 
+• Locality_id 
+• Locality_name 
+• City provisioning 
+• City_id 
+• City_name 
+ 
+State 
+•     State_id 
+• state_name 
+country 
+•    coun_id 
+• couns_name 
+• Location coordinates provisioning 
+• Location cooridnate1 
+• Location cooridnate2 
+• Reserved words listing (for business keywords/service keywords) 
+• Activity Feed provisioning 
+• Activity feed id 
+• Activity feed name 
+• Description 
+• Update Frequency (time)  
+ 
+Flag 
+• Flag_id 
+• Flag_reason 
+• Flg_date 
+• Status(block,spam) 
+ 
+3. Appointment Booking 
+• Appointment references 
+• Number of advance days for appointment 
+• Appointment reference limit (ex: number of appointments per reference limit) 
+• Appoint slots length provisioning 
+• Appointment length_ID 
+• Appointment length (duration)  
+• Appointment Provisioning 
+• Appointment reference number 
+• Appointment duration 
+• Appointment date/time 
+• Reminder Policy 
+• Reminder days  
+• Preferred notification mode 
+• Reminder info 
+• Appointment policy 
+• Policy_id 
+• Policy_name 
+• Policy_description. 
+• Advancedays 
+• Advanceday_id 
+• Advanceday 
+ 
+5. Customer Feedback 
+• Favorite Business 
+• Favorite business_id 
+• Favorite business_name  
+• Customer rating 
+• Customer rating parameter id 
+• Parameter name  
+• Parameter description 
+• Rating scale provisioning 
+• Obscene/reserved  word listing for feedback 
+ 
+ 
+ 
+❖ Relationship Between Entities 
+• Admin Module: 
+• Account_type-------------→Account 
+                         1 to M 
+• Account_type------------→Terms&Conditions 
+                         1 to M 
+• Account--------------→Social_media 
+                  1 to M 
+• Account--------------→Account_status 
+                  M to M(Account_Account_status) 
+ 
+• Business profile management: 
+• Business_category--------------→Business_subcategory 
+                                    1 to M 
+• Business_subcategory-----------→Business_profile 
+                                         1 to M 
+• Account-----------→Business_profile 
+                1 to M 
+ 
+• Business---------------→Business_working_days 
+                   1 to M 
+• Business_working_days-------------→B_working_hours 
+                                             1  to M 
+• Profile_type-----------------→Business_profile 
+                         1 to M 
+• Service_category---------------→Service_sub_category 
+                                  1 to M 
+• Service_sub_category---------------→Service 
+                                         1 to M 
+• Business_profile------------------→service 
+                                  M to M(business_profile_service) 
+• Business_profile_service-----------------→staff_member 
+                                                 1 to M 
+• Business_profile----------------→Locality 
+                               M to M(business_profile_localitty) 
+• Business_profile_locality------------------→location_coordinates 
+                                                1 to M 
+• Country--------------→State 
+                1 to M 
+• State---------------→city 
+              1 to M 
+• City------------→Locality 
+          1 to M 
+• User_Access_level----------------→staff_member 
+                                   1 to M 
+• Business_profile-------------------→Flag 
+                               M to M(Business_profile_flag) 
+• Account--------------------→Business_profile_flag 
+                    1 to M 
+ 
+• Appointment Booking 
+• Staff_member-----------------→slott_details 
+                              1 to M 
+• Staff_member----------------→Appointment_ref 
+                             1 to M 
+• Account------------------→slot_details 
+                  M to M(Account_slot_details) 
+• Account_slott_details---------------------→Appointment 
+                                            1 to M 
+• Business_profile_service-------------→Appointment 
+                                               1 to M 
+ 
+• Appointment---------------→Reminder 
+                         1 to M 
+• Business_profile_service----------→Appointment_policy 
+                                             1 to M 
+• Appointment_policy---------------→Appointment 
+                                      1 to M 
+• Customer Feedback: 
+• Service-------------------→rating_parameters 
+                 M to M(service_rating_parameters) 
+ 
+• Rating-------------------→service_rating_parameters 
+                 1 to M 
+• Account-----------→Business_profile 
+                M to M(fav_business) 
+• Account----------------------→service_rating_parameters 
+                    1 to M 
+ 
+ 
+ 
+• Note: 
+• 1 to M      (One to Many) 
+• Many to Many :Many to Many(middle table also mentioned beside relationship) 
+• ----→ represents between two entities  
+ 
+ 
+ 
+❖ DATABASE DESIGN 
+ 
+ 
+1. Administration 
+ 
+ 
+2. Business Profile Management 
+ 
+3. Appointment Booking 
+ 
+4. Customer Feedback 
+ 
+ 
+ 
+ 
+ 
+ 
+  

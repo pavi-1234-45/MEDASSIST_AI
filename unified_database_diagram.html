@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Unified Database Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e3f2fd',
+                primaryBorderColor: '#1e88e5',
+                primaryTextColor: '#000000',
+                lineColor: '#333333',
+                fontFamily: 'arial'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        p {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        .diagram-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow-x: auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>MedAssist AI - Unified Database Architecture</h1>
+    <p>A complete, single-view Entity Relationship Diagram mapping all 10 system components.</p>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+            erDiagram
+                %% 1. User and Auth
+                USERS_COLLECTION {
+                    string id PK "Firebase UID"
+                    string email
+                    string display_name
+                    string role "patient|doctor|admin"
+                    string phone
+                    timestamp created_at
+                }
+
+                %% 2. Patient Management
+                PATIENT_PROFILE {
+                    string uid PK,FK "References USERS"
+                    string name
+                    int age
+                    string gender
+                    string bloodGroup
+                    string address
+                    string conditions
+                    string allergies
+                    string currentMedicines
+                }
+                CAREGIVER_DATA {
+                    string uid PK,FK "References USERS"
+                    string name
+                    string relationship
+                    string phone
+                    string email
+                }
+
+                %% 3. Doctor Management
+                DOCTOR_PROFILE {
+                    string uid PK,FK "References USERS"
+                    string specialization
+                    string license_number
+                    int years_of_experience
+                    string consultation_fee
+                    boolean is_verified
+                }
+
+                %% 4. Appointment Scheduling
+                APPOINTMENTS {
+                    string id PK
+                    string patient_id FK
+                    string doctor_id FK
+                    string department
+                    string mode "Online|Hospital"
+                    string date
+                    string time
+                    string status
+                }
+
+                %% 5. Medicines
+                MEDICINES {
+                    string id PK
+                    string patient_id FK
+                    string name
+                    string dosage
+                    string frequency
+                    string status
+                    timestamp created_at
+                }
+
+                %% 6. Alerts & Emergencies
+                ALERTS {
+                    string id PK
+                    string patientId FK
+                    string type
+                    string symptom
+                    string message
+                    string status
+                }
+                EMERGENCIES {
+                    string id PK
+                    string patientId FK
+                    string type
+                    string status
+                    string reason
+                    string priority
+                    string location
+                }
+
+                %% 7. AI Health Assistant
+                AI_CHAT_HISTORY {
+                    string session_id PK
+                    string patient_id FK
+                    timestamp last_interaction
+                }
+                CHAT_MESSAGE {
+                    string message_id PK
+                    string session_id FK
+                    string role
+                    string content
+                }
+
+                %% 8. Health Reports
+                REPORTS {
+                    string id PK
+                    string patient_id FK
+                    string report_type
+                    string file_url
+                    string ai_summary
+                    string status
+                }
+
+                %% 9. Blockchain Audit
+                BLOCKCHAIN_AUDIT {
+                    string hash PK
+                    string previous_hash
+                    string patient_id FK
+                    string action_type
+                    string encrypted_data
+                    timestamp timestamp
+                }
+
+                %% 10. Cache Layer
+                REDIS_CACHE {
+                    string key PK
+                    string value
+                    int ttl
+                }
+                RATE_LIMIT_STORE {
+                    string key PK
+                    int request_count
+                    int expiry_window
+                }
+
+                %% Relationships
+                USERS_COLLECTION ||--o| PATIENT_PROFILE : "has_profile"
+                USERS_COLLECTION ||--o| CAREGIVER_DATA : "has_caregiver"
+                USERS_COLLECTION ||--o| DOCTOR_PROFILE : "has_doctor_profile"
+                
+                USERS_COLLECTION ||--o{ APPOINTMENTS : "books_as_patient"
+                USERS_COLLECTION ||--o{ APPOINTMENTS : "receives_as_doctor"
+                
+                USERS_COLLECTION ||--o{ MEDICINES : "takes"
+                
+                USERS_COLLECTION ||--o{ ALERTS : "receives"
+                USERS_COLLECTION ||--o{ EMERGENCIES : "triggers"
+                
+                USERS_COLLECTION ||--o{ AI_CHAT_HISTORY : "owns_chat"
+                AI_CHAT_HISTORY ||--o{ CHAT_MESSAGE : "contains"
+                
+                USERS_COLLECTION ||--o{ REPORTS : "uploads"
+                
+                USERS_COLLECTION ||--o{ BLOCKCHAIN_AUDIT : "audits_action"
+        </div>
+    </div>
+</body>
+</html>

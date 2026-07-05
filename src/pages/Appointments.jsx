@@ -31,7 +31,7 @@ export default function Appointments() {
       if (data) {
         const apptArray = Object.keys(data)
           .map(key => ({ id: key, ...data[key] }))
-          .filter(a => a.patientId === currentUser.uid);
+          .filter(a => (a.patientId || a.patient_id) === currentUser.uid);
         
         apptArray.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
         setAppointments(apptArray);
@@ -148,7 +148,7 @@ export default function Appointments() {
                       {appt.mode === 'Online' ? <Video size={24} /> : <Building2 size={24} />}
                     </div>
                     <div>
-                      <h3 className="font-bold text-xl text-gray-800">{appt.doctorName}</h3>
+                      <h3 className="font-bold text-xl text-gray-800">{appt.doctorName || appt.doctor_name}</h3>
                       <p className="text-sm text-gray-500 font-medium">{appt.department}</p>
                     </div>
                   </div>

@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { Search, Pill, Tag, Package, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { apiClient } from '../../utils/apiClient';
 
 export default function MedicineSearch() {
   const { t } = useLanguage();
@@ -26,7 +27,7 @@ export default function MedicineSearch() {
       // Filters parameter usually depends on the exact dataset schema. 
       // We will search across all fields if standard search param is supported.
       const url = `/api/medical/datagov/resource/${JAN_AUSHADHI_RESOURCE_ID}?format=json&limit=20&filters[generic_name]=${encodeURIComponent(query)}`;
-      const response = await fetch(url);
+      const response = await apiClient(url);
       
       if (!response.ok) {
         throw new Error('Failed to fetch from Data.gov.in proxy');

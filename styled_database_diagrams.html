@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Styled Database Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                htmlLabels: true,
+                curve: 'stepBefore'
+            },
+            themeVariables: {
+                lineColor: '#333333'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #cce5ff; 
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .diagram-container {
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid #99c2ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 1000px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MedAssist AI - Exact Database Architecture</h1>
+    <h2>Styled mapping of your specific document data</h2>
+
+    <!-- 1. User and Authentication -->
+    <div class="diagram-container">
+        <h2>1. User and Authentication Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                
+                Users["<b><u>users</u></b><br/><b>PK</b> user_id<br/>email<br/>display_name<br/>role<br/>phone<br/>preferred_language<br/>created_at<br/>updated_at"]:::green
+                Sessions["<b><u>sessions</u> (Subcol)</b><br/><b>PK</b> session_id<br/>firebase_token<br/>device_info<br/>login_timestamp<br/>is_valid"]:::orange
+                Notif["<b><u>notification_settings</u> (Subcol)</b><br/><b>PK</b> default<br/>push_enabled<br/>email_enabled<br/>sms_enabled<br/>whatsapp_enabled"]:::pink
+                
+                Users --- Sessions
+                Users --- Notif
+        </div>
+    </div>
+
+    <!-- 2. Patient Management -->
+    <div class="diagram-container">
+        <h2>2. Patient Management Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Patient["<b><u>patients</u></b><br/><b>PK</b> patient_id<br/><b>FK</b> user_id<br/>name<br/>age<br/>gender<br/>phone<br/>condition<br/>caregiver<br/><b>FK</b> caregiver_id<br/>adherence<br/>last_alert<br/>status<br/>created_at<br/>updated_at"]:::green
+                CareAssign["<b><u>caregiver_assignments</u> (Subcol)</b><br/><b>PK</b> assignment_id<br/><b>FK</b> caregiver_id<br/>relationship<br/>assigned_date<br/>is_active"]:::orange
+
+                Patient --- CareAssign
+        </div>
+    </div>
+
+    <!-- 3. Doctor Management -->
+    <div class="diagram-container">
+        <h2>3. Doctor Management Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Doctor["<b><u>doctors</u></b><br/><b>PK</b> doctor_id<br/><b>FK</b> user_id<br/>name<br/>specialization<br/>hospital<br/>appointments<br/>emergencies<br/>created_at<br/>updated_at"]:::green
+                Affil["<b><u>affiliations</u> (Subcol)</b><br/><b>PK</b> affiliation_id<br/>hospital_name<br/>designation<br/>is_primary"]:::orange
+
+                Doctor --- Affil
+        </div>
+    </div>
+
+    <!-- 4. Appointments -->
+    <div class="diagram-container">
+        <h2>4. Appointment Scheduling Collections</h2>
+        <div class="mermaid">
+            flowchart TD
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Patient["<b><u>patients</u></b><br/><b>PK</b> patient_id"]:::green
+                Doctor["<b><u>doctors</u></b><br/><b>PK</b> doctor_id"]:::pink
+                Appt["<b><u>appointments</u></b><br/><b>PK</b> appointment_id<br/><b>FK</b> patient_id<br/>patient_name<br/><b>FK</b> doctor_id<br/>doctor_name<br/>date<br/>time<br/>status<br/>created_at<br/>updated_at"]:::orange
+
+                Patient --- Appt
+                Doctor --- Appt
+        </div>
+    </div>
+
+    <!-- 5. Medicines -->
+    <div class="diagram-container">
+        <h2>5. Medicine and Prescription Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Patient["<b><u>patients</u></b><br/><b>PK</b> patient_id"]:::green
+                Meds["<b><u>medicines</u></b><br/><b>PK</b> medicine_id<br/>name<br/>dosage<br/>frequency<br/><b>FK</b> patient_id<br/>reminder_times (array)<br/>notes<br/>is_active<br/>created_at<br/>updated_at"]:::orange
+
+                Patient --- Meds
+        </div>
+    </div>
+
+    <!-- 6. Alerts & Emergencies -->
+    <div class="diagram-container">
+        <h2>6. Alert and Emergency Collections</h2>
+        <div class="mermaid">
+            flowchart TD
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Alert["<b><u>alerts</u></b><br/><b>PK</b> alert_id<br/>type<br/>patient_name<br/>symptom<br/>status<br/>time<br/>created_at<br/>updated_at"]:::orange
+        </div>
+    </div>
+
+    <!-- 7. AI Health Assistant -->
+    <div class="diagram-container">
+        <h2>7. AI Health Assistant Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Chat["<b><u>chat_sessions</u></b><br/><b>PK</b> session_id<br/><b>FK</b> user_id<br/>language<br/>role<br/>started_at<br/>ended_at<br/>emergency_detected"]:::green
+                Messages["<b><u>messages</u> (Subcol)</b><br/><b>PK</b> message_id<br/>role<br/>text<br/>timestamp<br/>rag_sources_used (array)"]:::orange
+
+                Chat --- Messages
+        </div>
+    </div>
+
+    <!-- 8. Health Reports -->
+    <div class="diagram-container">
+        <h2>8. Health Reports Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Patient["<b><u>patients</u></b><br/><b>PK</b> patient_id"]:::green
+                Reports["<b><u>reports</u></b><br/><b>PK</b> report_id<br/><b>FK</b> patient_id<br/>type<br/>data (map)<br/>generated_at<br/>created_at<br/>updated_at"]:::orange
+
+                Patient --- Reports
+        </div>
+    </div>
+
+    <!-- 9. Blockchain -->
+    <div class="diagram-container">
+        <h2>9. Blockchain Audit Trail Collections</h2>
+        <div class="mermaid">
+            flowchart LR
+                classDef green fill:#4de64d,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Audit["<b><u>audit_logs</u></b><br/><b>PK</b> audit_id<br/>record_type<br/>record_id<br/><b>FK</b> actor_id<br/>action<br/>data_hash<br/>previous_hash<br/>block_hash<br/>timestamp<br/>block_index<br/>verified<br/>metadata"]:::green
+                Consent["<b><u>consent_records</u></b><br/><b>PK</b> consent_id<br/><b>FK</b> patient_id<br/>consent_type<br/>granted_to<br/>details<br/>consent_hash<br/>transaction_id<br/>timestamp<br/>verified"]:::orange
+                
+                Audit ~~~ Consent
+        </div>
+    </div>
+
+    <!-- 10. Cache -->
+    <div class="diagram-container">
+        <h2>10. Cache Layer (Redis)</h2>
+        <div class="mermaid">
+            flowchart TD
+                classDef orange fill:#ff9933,stroke:#000,stroke-width:1px,color:#000,text-align:left
+                classDef pink fill:#ff8080,stroke:#000,stroke-width:1px,color:#000,text-align:left
+
+                Cache["<b><u>Redis Namespace: rag:{source}:{query}</u></b><br/>rag:openfda:{drug_name} (TTL 24h)<br/>rag:openfda_adverse:{drug_name} (TTL 24h)<br/>rag:rxnorm:{drug_name} (TTL 24h)<br/>rag:datagov_med:{query} (TTL 24h)<br/>rag:datagov_hosp:{location} (TTL 24h)<br/>rag:medline:{query} (TTL 24h)"]:::orange
+                Rate["<b><u>Redis Rate Limiter</u></b><br/>rate_limit:{client_id}"]:::pink
+                
+                Cache ~~~ Rate
+        </div>
+    </div>
+
+</body>
+</html>
