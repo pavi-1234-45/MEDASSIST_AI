@@ -41,12 +41,15 @@ Authentication
 
 
 React Native
+
       │
       ▼
 FastAPI Backend
+
       │
       ▼
 Firebase Authentication
+
       │
       ▼
 Cloud Firestore (NoSQL)
