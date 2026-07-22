@@ -108,13 +108,7 @@ Cloud Firestore (NoSQL)
 
 
  Future Enhancements
-
-- WhatsApp Integration
-- IVR Voice Support
-- SMS Notifications
-- Emergency Detection
 - Wearable Device Integration
 - Advanced AI Health Insights
 
- License
-This project is developed for educational and research purposes.
+
