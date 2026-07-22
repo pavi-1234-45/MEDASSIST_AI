@@ -1,0 +1,90 @@
+classDiagram
+    %% Core System Base Class
+    class User {
+        +UUID id
+        +String email
+        +String passwordHash
+        +String role
+        +Boolean isVerified
+        +login() Boolean
+        +logout() void
+        +updateProfile() void
+    }
+
+    %% User Role Inheritance
+    class Patient {
+        +String fullName
+        +Date dateOfBirth
+        +String bloodType
+        +bookAppointment(Doctor doc, DateTime time) Appointment
+        +viewMedicalRecords() List~MedicalRecord~
+    }
+
+    class Doctor {
+        +String specialty
+        +String licenseNumber
+        +Float consultationFee
+        +setAvailability(Schedule schedule) void
+        +prescribeMedicine(Patient p, Prescription rx) void
+    }
+
+    class Caregiver {
+        +String certifications
+        +Int experienceYears
+        +monitorPatient(Patient p) void
+        +respondToAlert(Alert a) void
+    }
+
+    class Admin {
+        +String department
+        +Int accessLevel
+        +banUser(User u) void
+        +generateSystemReport() Report
+    }
+
+    %% Inheritance Relationships
+    User <|-- Patient
+    User <|-- Doctor
+    User <|-- Caregiver
+    User <|-- Admin
+
+    %% Domain Classes
+    class Appointment {
+        +UUID appointmentId
+        +DateTime scheduledTime
+        +String status
+        +String consultationNotes
+        +cancel() void
+        +complete() void
+    }
+
+    class MedicalRecord {
+        +UUID recordId
+        +String diagnosis
+        +DateTime createdAt
+        +addPrescription(Prescription rx) void
+    }
+
+    class AIEngine {
+        +String modelVersion
+        +Float confidenceScore
+        +analyzeVitals(Vitals v) HealthPrediction
+        +detectAnomalies(MedicalRecord m) Alert
+    }
+
+    class Alert {
+        +UUID alertId
+        +String severityLevel
+        +String message
+        +Boolean isResolved
+        +triggerNotification() void
+    }
+
+    %% Association, Aggregation, and Composition Relationships
+    Doctor "1" -- "*" Appointment : conducts
+    Patient "1" -- "*" Appointment : attends
+    Patient "1" *-- "*" MedicalRecord : owns (Composition)
+    Caregiver "*" -- "*" Patient : assigned to
+    AIEngine "1" ..> "*" MedicalRecord : analyzes (Dependency)
+    AIEngine "1" --> "*" Alert : generates
+    Alert "*" -- "1" Caregiver : alerts

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Patient Data Flow & Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                curve: 'basis' // Smooth workflow curves
+            },
+            themeVariables: {
+                primaryColor: '#e3f2fd',
+                primaryBorderColor: '#1e88e5',
+                primaryTextColor: '#000000',
+                lineColor: '#2c3e50',
+                fontFamily: 'Arial, sans-serif'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa; 
+            margin: 0;
+            padding: 30px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .diagram-container {
+            background: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 1000px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+        .description {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Patient Journey & Data Workflow</h1>
+    <h2>How data moves through the Patient ecosystem</h2>
+    <p class="description">This workflow diagram illustrates the step-by-step lifecycle of a patient within the MedAssist AI system, showing how the database tables interact dynamically in real-time.</p>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+            flowchart TD
+                classDef action fill:#d1c4e9,stroke:#512da8,stroke-width:2px,color:#000
+                classDef system fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+                classDef database fill:#ffcc80,stroke:#e65100,stroke-width:2px,color:#000
+                classDef alert fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px,color:#000
+
+                %% 1. Onboarding Phase
+                Start([Patient Opens App]):::action --> Register[User Registration]:::action
+                Register --> DB_User[(users DB)]:::database
+                DB_User --> InitProfile[System Initializes Profile]:::system
+                InitProfile --> DB_Patient[(patients DB)]:::database
+                DB_Patient --> Consent[Patient Grants AI Consent]:::action
+                Consent --> DB_Consent[(consent_records DB)]:::database
+
+                %% 2. Caregiver Setup Phase
+                DB_Patient --> AddCaregiver[Assigns Caregiver]:::action
+                AddCaregiver --> DB_Caregiver[(caregiver_assignments DB)]:::database
+
+                %% 3. Clinical Workflow
+                DB_Patient --> BookAppt[Books Doctor Appointment]:::action
+                BookAppt --> DB_Appt[(appointments DB)]:::database
+                DB_Appt --> DocAction[Doctor Conducts Checkup]:::action
+                DocAction --> Prescribe[Doctor Prescribes Medication]:::action
+                Prescribe --> DB_Meds[(medicines DB)]:::database
+
+                %% 4. AI & Emergency Workflow
+                DB_Meds --> Adherence[AI Monitors Adherence]:::system
+                DB_Patient --> AIMonitor[AI Analyzes Vitals/Chat]:::system
+                
+                AIMonitor -->|Abnormal Symptoms| TriggerAlert{Emergency Detected?}:::alert
+                TriggerAlert -- Yes --> GenerateAlert[System Generates Alert]:::system
+                GenerateAlert --> DB_Alerts[(alerts DB)]:::database
+                
+                DB_Alerts -->|Push Notification| NotifyCaregiver[Notify Assigned Caregiver]:::system
+                DB_Caregiver -.->|Reads assignment| NotifyCaregiver
+                
+                TriggerAlert -- No --> UpdateScore[Update Patient Health Score]:::system
+                UpdateScore --> DB_Patient
+
+        </div>
+    </div>
+
+</body>
+</html>

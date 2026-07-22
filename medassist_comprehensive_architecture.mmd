@@ -1,0 +1,105 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#ffffff', 'fontSize': '36px', 'fontFamily': 'arial', 'lineColor': '#333333'}}}%%
+graph LR
+    %% Corporate Clean Architecture Styling
+    classDef client fill:#ffffff,stroke:#1976d2,stroke-width:5px,color:#1976d2,font-size:32px,font-weight:bold
+    classDef gateway fill:#ffffff,stroke:#ff8f00,stroke-width:5px,color:#e65100,font-size:36px,font-weight:bold
+    classDef service fill:#ffffff,stroke:#388e3c,stroke-width:5px,color:#388e3c,font-size:32px,font-weight:bold
+    classDef database fill:#ffffff,stroke:#d32f2f,stroke-width:5px,color:#d32f2f,font-size:32px,font-weight:bold
+    classDef ai fill:#ffffff,stroke:#f57c00,stroke-width:5px,color:#f57c00,font-size:32px,font-weight:bold
+    classDef external fill:#ffffff,stroke:#7b1fa2,stroke-width:5px,color:#7b1fa2,font-size:32px,font-weight:bold
+    classDef env fill:#fff3e0,stroke:#e65100,stroke-width:4px,stroke-dasharray:8 8,color:#d84315,font-size:26px,font-weight:bold
+
+    subgraph FrontendClients["Client Applications (React)"]
+        direction TB
+        Pat["Patient Module"]:::client
+        Doc["Doctor Module"]:::client
+        Care["Caregiver Module"]:::client
+        Adm["Admin Module"]:::client
+    end
+
+    Gateway{"API Gateway / Router"}:::gateway
+
+    subgraph BackendAPI["FastAPI Services (routers)"]
+        direction TB
+        R_Users[users.py / Auth]:::service
+        R_Appt[appointments.py]:::service
+        R_Alerts[alerts.py]:::service
+        R_Med[medicines.py]:::service
+        R_Health[health.py / reports.py]:::service
+        R_Block[blockchain.py]:::service
+    end
+
+    subgraph BusinessLogic["Business Logic & AI Engine"]
+        direction TB
+        S_Medi[medi_service.py]:::service
+        S_Crypto[blockchain.py Core]:::service
+        RAG[medical_rag.py / pipeline.py]:::ai
+        S_AI[ai_service.py]:::ai
+        C_AI[ai_client.py]:::ai
+    end
+
+    subgraph PersistenceLayer["Data Persistence"]
+        direction TB
+        C_Usr[(users, patients, doctors)]:::database
+        C_Med[(medicines, med_logs)]:::database
+        C_Appt[(appointments, sos_events)]:::database
+        C_Rep[(reports, system_settings)]:::database
+        Redis[(Redis Cache)]:::database
+    end
+
+    subgraph ExternalAPIs["External Services"]
+        direction TB
+        DrugAPI["drug_api.py (External Data)"]:::external
+        Firebase[Firebase Auth]:::external
+    end
+
+    %% =============================
+    %% API KEYS SECTION (From .env)
+    %% =============================
+    AIKeys[Env Keys:<br/>- AI_API_KEY<br/>- WHISPER<br/>- AI_MODEL_CHAT]:::env
+    FDAKeys[Env Keys:<br/>- OPENFDA_API_KEY<br/>- DATA_GOV_IN_API_KEY]:::env
+    MediKeys[Env Keys:<br/>- MEDI_CLIENT_ID<br/>- MEDI_CLIENT_SECRET]:::env
+
+    C_AI -.->|Requires| AIKeys
+    DrugAPI -.->|Requires| FDAKeys
+    S_Medi -.->|Requires| MediKeys
+    %% =============================
+
+    %% Frontend to Gateway
+    Pat --> Gateway
+    Doc --> Gateway
+    Care --> Gateway
+    Adm --> Gateway
+
+    %% Gateway to Backend
+    Gateway --> R_Users
+    Gateway --> R_Appt
+    Gateway --> R_Alerts
+    Gateway --> R_Med
+    Gateway --> R_Health
+    Gateway --> R_Block
+
+    %% Backend to Services
+    R_Users --> Firebase
+    R_Med --> S_Medi
+    R_Med --> S_Crypto
+    R_Block --> S_Crypto
+    R_Health --> S_AI
+    
+    %% AI Flow
+    S_AI --> C_AI
+    S_AI --> RAG
+
+    %% Services to External APIs
+    S_Medi --> DrugAPI
+    RAG --> DrugAPI
+
+    %% Services & Backend to Databases
+    R_Users --> C_Usr
+    R_Appt --> C_Appt
+    R_Alerts --> C_Appt
+    R_Alerts --> Redis
+    R_Med --> C_Med
+    S_Crypto --> C_Rep
+    RAG --> Redis
+    RAG --> C_Rep

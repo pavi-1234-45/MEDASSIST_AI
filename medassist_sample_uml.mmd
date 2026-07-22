@@ -1,0 +1,74 @@
+classDiagram
+    %% Replicating the exact Light Blue style of the uploaded sample
+    classDef default fill:#87ceeb,stroke:#000000,stroke-width:1px,color:#000000
+    
+    class ConsultationStatus {
+        <<Enumeration>>
+        +SCHEDULED : int = 0
+        +ONGOING : int = 1
+        +COMPLETED : int = 2
+        +CANCELLED = 3
+    }
+    
+    class Patient {
+        -name : String
+        -homeAddress : String
+        -contact : String
+        -active : boolean
+    }
+    
+    class Consultation {
+        -createDate : date
+    }
+    
+    class MedicalRecord {
+        -qtyOfMeds : int
+        -healthStatus : String
+        +calculateTotalCost()
+        +calculateRisk()
+    }
+    
+    class Treatment {
+        -baseCost : float
+        -description : String
+        +getPriceForPatient()
+        +getDuration()
+    }
+    
+    class Payment {
+        -amount : float
+    }
+    
+    class Insurance {
+        -number : String
+        -type : String
+        -expireDate : date
+    }
+    
+    class Cash {
+        -cashTendered : float
+    }
+    
+    class BankTransfer {
+        -name : String
+        -bankID : String
+        +authorized()
+    }
+    
+    class Wallet {
+        -walletID : String
+        -walletName : String
+    }
+    
+    %% Relationships exactly mirroring the sample structure
+    ConsultationStatus "1" -- Consultation
+    Patient "1" -- "0..*" Consultation
+    Consultation "1" o-- "1..*" MedicalRecord : clinical notes
+    MedicalRecord "0..*" -- "1" Treatment
+    Consultation "1..*" --> Payment
+    
+    %% Generalization (Inheritance)
+    Payment <|-- Insurance
+    Payment <|-- Cash
+    Payment <|-- BankTransfer
+    Payment <|-- Wallet

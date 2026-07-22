@@ -1,0 +1,34 @@
+flowchart LR
+    %% Styling to perfectly match the custom image colors
+    classDef greenNode fill:#33cc33,stroke:#228b22,stroke-width:2px,color:#000,text-align:left
+    classDef orangeNode fill:#ff9933,stroke:#cc7a00,stroke-width:2px,color:#000,text-align:left
+    classDef pinkNode fill:#ff6666,stroke:#cc0000,stroke-width:2px,color:#000,text-align:left
+
+    %% Nodes defined as visual tables
+    Users["<b>users</b><br/>────────<br/><b>PK</b> user_id<br/>email<br/>display_name<br/>role<br/>phone<br/>preferred_language"]:::greenNode
+
+    Patients["<b>patients</b><br/>────────<br/><b>PK</b> patient_id<br/><b>PF</b> user_id<br/>name<br/>age<br/>gender<br/>condition<br/>adherence_score<br/><b>FK</b> caregiver_id"]:::orangeNode
+
+    Caregiver["<b>caregiver_assignments</b><br/>────────<br/><b>PK</b> assignment_id<br/><b>PF</b> patient_id<br/><b>PF</b> caregiver_id<br/>relationship<br/>is_active"]:::pinkNode
+
+    Consent["<b>consent_records</b><br/>────────<br/><b>PK</b> consent_id<br/><b>PF</b> patient_id<br/>consent_type<br/>details<br/>consent_hash"]:::pinkNode
+
+    Appt["<b>appointments</b><br/>────────<br/><b>PK</b> appointment_id<br/><b>PF</b> patient_id<br/><b>PF</b> doctor_id<br/>date<br/>time<br/>status"]:::orangeNode
+
+    Meds["<b>medicines</b><br/>────────<br/><b>PK</b> medicine_id<br/><b>PF</b> patient_id<br/>name<br/>dosage<br/>frequency<br/>is_active"]:::pinkNode
+
+    Alerts["<b>alerts</b><br/>────────<br/><b>PK</b> alert_id<br/><b>PF</b> patient_id<br/>type<br/>symptom<br/>status"]:::pinkNode
+
+    %% Layout and Connections
+    Users --> Patients
+    
+    Patients --> Caregiver
+    Patients --> Appt
+    Patients --> Consent
+    Patients --> Meds
+    Patients --> Alerts
+
+    Users -- "FK caregiver_id" --> Caregiver
+    Users -- "FK doctor_id" --> Appt
+    Appt -- "Prescribed at" --> Meds
+    Caregiver -- "Notified of" --> Alerts

@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="patient-db" name="Patient Database">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="users_header" value="Users" parent="1" vertex="1" style="shape=rectangle;fillColor=#33cc33;fontColor=#000000;strokeColor=#228b22;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="50" y="400" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="users_body" value="PK user_id&amp;#10;email&amp;#10;display_name&amp;#10;role&amp;#10;phone&amp;#10;preferred_language" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#228b22;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="50" y="430" width="220" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="patients_header" value="Patients" parent="1" vertex="1" style="shape=rectangle;fillColor=#ff9933;fontColor=#000000;strokeColor=#cc7a00;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="350" y="400" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="patients_body" value="PK patient_id&amp;#10;PF user_id&amp;#10;name&amp;#10;age&amp;#10;gender&amp;#10;condition&amp;#10;adherence_score&amp;#10;FK caregiver_id" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#cc7a00;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="350" y="430" width="220" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="caregiver_header" value="Caregiver_assignments" parent="1" vertex="1" style="shape=rectangle;fillColor=#ff6666;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="650" y="100" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="caregiver_body" value="PK assignment_id&amp;#10;PF patient_id&amp;#10;PF caregiver_id&amp;#10;relationship&amp;#10;is_active" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="650" y="130" width="220" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="consent_header" value="Consent" parent="1" vertex="1" style="shape=rectangle;fillColor=#ff6666;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="650" y="300" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="consent_body" value="PK consent_id&amp;#10;PF patient_id&amp;#10;consent_type&amp;#10;details&amp;#10;consent_hash" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="650" y="330" width="220" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="appt_header" value="Appt" parent="1" vertex="1" style="shape=rectangle;fillColor=#ff9933;fontColor=#000000;strokeColor=#cc7a00;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="650" y="500" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="appt_body" value="PK appointment_id&amp;#10;PF patient_id&amp;#10;PF doctor_id&amp;#10;date&amp;#10;time&amp;#10;status" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#cc7a00;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="650" y="530" width="220" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="meds_header" value="Meds" parent="1" vertex="1" style="shape=rectangle;fillColor=#ff6666;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="950" y="500" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="meds_body" value="PK medicine_id&amp;#10;PF patient_id&amp;#10;name&amp;#10;dosage&amp;#10;frequency&amp;#10;is_active" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="950" y="530" width="220" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="alerts_header" value="Alerts" parent="1" vertex="1" style="shape=rectangle;fillColor=#ff6666;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=10;fontSize=14;fontStyle=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeWidth=2;">
+          <mxGeometry x="950" y="100" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="alerts_body" value="PK alert_id&amp;#10;PF patient_id&amp;#10;type&amp;#10;symptom&amp;#10;status" parent="1" vertex="1" style="shape=rectangle;fillColor=#ffffff;fontColor=#000000;strokeColor=#cc0000;rounded=1;arcSize=0;fontSize=12;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=10;spacingTop=5;strokeWidth=2;">
+          <mxGeometry x="950" y="130" width="220" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_0" value="" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="users_header" target="patients_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_1" value="" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="patients_header" target="caregiver_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_2" value="" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="patients_header" target="appt_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_3" value="" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="patients_header" target="consent_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4" value="" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="patients_header" target="meds_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_5" value="" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="patients_header" target="alerts_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_6" value="FK caregiver_id" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="users_header" target="caregiver_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_7" value="FK doctor_id" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="users_header" target="appt_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_8" value="Prescribed at" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="appt_header" target="meds_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_9" value="Notified of" parent="1" style="endArrow=block;html=1;rounded=0;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" source="caregiver_header" target="alerts_header">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,163 @@
+classDiagram
+    %% --------------------------------
+    %% CORE AUTHENTICATION & USERS
+    %% --------------------------------
+    class User {
+        <<Abstract>>
+        +UUID userId
+        +String email
+        +String passwordHash
+        +String roleType
+        +login() AuthToken
+        +verifyMFA() Boolean
+    }
+
+    class AuthService {
+        +generateJWT(User u) String
+        +validateToken(String token) Boolean
+        +hashPassword(String p) String
+    }
+
+    %% --------------------------------
+    %% ROLES (Inheritance)
+    %% --------------------------------
+    class Patient {
+        +String fullName
+        +Date dob
+        +String emergencyContact
+        +linkDevice(IoTDevice d) void
+        +requestConsultation() Appointment
+    }
+
+    class Doctor {
+        +String specialization
+        +String licenseId
+        +Float rating
+        +approveAppointment(Appointment a) void
+        +issuePrescription(Prescription p) void
+    }
+
+    class Caregiver {
+        +String shiftHours
+        +Boolean isAvailable
+        +acknowledgeAlert(AlertSystem a) void
+    }
+
+    class Admin {
+        +String accessLevel
+        +auditSystemLogs() void
+        +manageBilling() void
+    }
+
+    User <|-- Patient
+    User <|-- Doctor
+    User <|-- Caregiver
+    User <|-- Admin
+    User ..> AuthService : Authenticates via
+
+    %% --------------------------------
+    %% MEDICAL DATA (Composition)
+    %% --------------------------------
+    class MedicalRecord {
+        +UUID recordId
+        +String medicalHistory
+        +Date lastUpdated
+        +exportToPDF() File
+    }
+
+    class Prescription {
+        +UUID rxId
+        +String medicineName
+        +String dosage
+        +Int durationDays
+        +validateContraindications() Boolean
+    }
+
+    class LabResult {
+        +String testType
+        +String biomarkerData
+        +Boolean isAbnormal
+    }
+
+    Patient "1" *-- "1..*" MedicalRecord : owns
+    MedicalRecord "1" *-- "*" Prescription : contains
+    MedicalRecord "1" *-- "*" LabResult : includes
+    Doctor "1" -- "*" Prescription : writes
+
+    %% --------------------------------
+    %% SCHEDULING
+    %% --------------------------------
+    class Appointment {
+        +UUID appointmentId
+        +DateTime scheduledAt
+        +String meetingLink
+        +String status
+        +reschedule(DateTime t) void
+        +cancel() void
+    }
+
+    Patient "1" -- "*" Appointment : books
+    Doctor "1" -- "*" Appointment : hosts
+
+    %% --------------------------------
+    %% AI, IOT, & TELEMETRY
+    %% --------------------------------
+    class IoTDevice {
+        +String macAddress
+        +String deviceType
+        +Boolean isConnected
+        +streamVitals() SensorDataStream
+    }
+
+    class VitalSigns {
+        +Float heartRate
+        +Float bloodPressure
+        +Float spO2
+        +DateTime timestamp
+    }
+
+    class AIEngine {
+        +String neuralNetModel
+        +Float confidenceThreshold
+        +analyzeRealTimeVitals(VitalSigns v) HealthPrediction
+        +detectAnomalies(LabResult lr) void
+    }
+
+    class HealthPrediction {
+        +String riskCategory
+        +Float probabilityScore
+        +String clinicalSuggestion
+    }
+
+    class AlertSystem {
+        +UUID alertId
+        +String severity
+        +triggerEmergencyProtocol() void
+        +notifyCaregiver() void
+    }
+
+    Patient "1" -- "0..*" IoTDevice : wears
+    IoTDevice "1" *-- "*" VitalSigns : generates
+    AIEngine "1" ..> "*" VitalSigns : analyzes
+    AIEngine "1" --> "*" HealthPrediction : outputs
+    HealthPrediction "1" ..> "1" AlertSystem : triggers (If Critical)
+    AlertSystem "*" -- "1..*" Caregiver : alerts
+
+    %% --------------------------------
+    %% INFRASTRUCTURE & SECURITY
+    %% --------------------------------
+    class DatabaseManager {
+        +connect() void
+        +query() Result
+        +backup() void
+    }
+
+    class BlockchainLedger {
+        +String blockHash
+        +String previousHash
+        +recordTransaction(Prescription p) void
+        +verifyIntegrity(MedicalRecord m) Boolean
+    }
+
+    MedicalRecord "*" ..> "1" BlockchainLedger : Secured By
+    DatabaseManager "1" ..> "*" User : Stores

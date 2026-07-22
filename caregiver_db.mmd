@@ -1,0 +1,35 @@
+flowchart LR
+    %% Custom Styling for Caregiver Ecosystem matching the sample image exactly
+    classDef greenNode fill:#33cc33,stroke:#228b22,stroke-width:2px,color:#000,text-align:left
+    classDef orangeNode fill:#ff9933,stroke:#cc7a00,stroke-width:2px,color:#000,text-align:left
+    classDef pinkNode fill:#ff6666,stroke:#cc0000,stroke-width:2px,color:#000,text-align:left
+
+    %% Nodes defined as visual tables
+    Users["<b>users</b><br/>────────<br/><b>PK</b> user_id<br/>email<br/>role: 'caregiver'<br/>phone<br/>is_verified"]:::greenNode
+
+    Caregivers["<b>caregivers</b><br/>────────<br/><b>PK</b> caregiver_id<br/><b>PF</b> user_id<br/>certifications<br/>experience_years<br/>availability<br/>hourly_rate"]:::orangeNode
+
+    Assignments["<b>caregiver_assignments</b><br/>────────<br/><b>PK</b> assignment_id<br/><b>PF</b> caregiver_id<br/><b>FK</b> patient_id<br/>relationship<br/>is_active"]:::orangeNode
+
+    Patients["<b>patients</b><br/>────────<br/><b>PK</b> patient_id<br/>name<br/>condition<br/>care_level_req"]:::pinkNode
+
+    Tasks["<b>care_tasks</b><br/>────────<br/><b>PK</b> task_id<br/><b>PF</b> assignment_id<br/>task_type<br/>description<br/>due_time<br/>status"]:::pinkNode
+
+    Alerts["<b>alerts</b><br/>────────<br/><b>PK</b> alert_id<br/><b>PF</b> patient_id<br/>type<br/>symptom<br/>resolved_by"]:::pinkNode
+
+    Reports["<b>reports</b><br/>────────<br/><b>PK</b> report_id<br/><b>PF</b> caregiver_id<br/><b>FK</b> patient_id<br/>health_summary<br/>date"]:::pinkNode
+
+    %% Strict Left-to-Right Tiering
+    Users --> Caregivers
+    
+    Caregivers --> Assignments
+    Caregivers --> Reports
+    
+    Assignments --> Patients
+    Assignments --> Tasks
+    
+    Patients --> Alerts
+    
+    %% Cross-reference Links (Dashed)
+    Patients -. "Monitored via" .-> Reports
+    Caregivers -. "Responds to" .-> Alerts

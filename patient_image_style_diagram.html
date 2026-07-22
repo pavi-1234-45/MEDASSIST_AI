@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Patient Database Design (Image Style)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                htmlLabels: true,
+                curve: 'linear' // Direct straight lines to fix rendering gaps
+            },
+            themeVariables: {
+                lineColor: '#333333',
+                primaryTextColor: '#000',
+                fontFamily: 'Arial, sans-serif'
+            }
+        });
+    </script>
+    <style>
+        body {
+            /* Light blue background matching the uploaded image exactly */
+            background-color: #bde4f4; 
+            margin: 0;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1a365d;
+            margin-bottom: 10px;
+        }
+        .diagram-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        /* Node styles via CSS injection inside Mermaid */
+        .mermaid .node rect {
+            fill: transparent !important;
+            stroke: transparent !important;
+        }
+        
+        /* Custom HTML Table Nodes mimicking the image */
+        .db-table {
+            border: 1px solid #333;
+            border-radius: 4px;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            width: 180px;
+            text-align: left;
+            font-size: 13px;
+            overflow: hidden;
+        }
+        
+        /* Green Table (Like 'Account') */
+        .db-table.green { background-color: #33cc33; }
+        .db-table.green .header { color: #000; border-bottom: 1px solid #333; }
+        
+        /* Orange Table (Like 'Service') */
+        .db-table.orange { background-color: #ff9933; }
+        .db-table.orange .header { color: darkblue; border-bottom: 1px solid #333; }
+        
+        /* Pink/Red Table (Like 'Rating') */
+        .db-table.pink { background-color: #ff6666; }
+        .db-table.pink .header { color: darkblue; border-bottom: 1px solid #333; }
+        
+        .header {
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        
+        .fields {
+            padding: 6px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MedAssist AI - Patient Database Architecture</h1>
+    <h2>(Detailed Visual Design - Custom Schema Match)</h2>
+
+    <div class="diagram-wrapper">
+        <div class="mermaid">
+            flowchart LR
+
+                %% DEFINE HTML NODES
+                Users["<div class='db-table green'>
+                    <div class='header'>users</div>
+                    <div class='fields'>
+                        <b>PK</b> user_id<br/>
+                        email<br/>
+                        display_name<br/>
+                        role<br/>
+                        phone<br/>
+                        preferred_language<br/>
+                        created_at
+                    </div>
+                </div>"]
+
+                Patients["<div class='db-table orange'>
+                    <div class='header'>patients</div>
+                    <div class='fields'>
+                        <b>PK</b> patient_id<br/>
+                        <b>PF</b> user_id<br/>
+                        name<br/>
+                        age<br/>
+                        gender<br/>
+                        condition<br/>
+                        adherence_score<br/>
+                        status<br/>
+                        <i>FK</i> caregiver_id
+                    </div>
+                </div>"]
+
+                Caregiver["<div class='db-table pink'>
+                    <div class='header'>caregiver_assignments</div>
+                    <div class='fields'>
+                        <b>PK</b> assignment_id<br/>
+                        <b>PF</b> patient_id<br/>
+                        <b>PF</b> caregiver_id<br/>
+                        relationship<br/>
+                        is_active
+                    </div>
+                </div>"]
+
+                Consent["<div class='db-table pink'>
+                    <div class='header'>consent_records</div>
+                    <div class='fields'>
+                        <b>PK</b> consent_id<br/>
+                        <b>PF</b> patient_id<br/>
+                        consent_type<br/>
+                        details<br/>
+                        consent_hash
+                    </div>
+                </div>"]
+
+                Appt["<div class='db-table orange'>
+                    <div class='header'>appointments</div>
+                    <div class='fields'>
+                        <b>PK</b> appointment_id<br/>
+                        <b>PF</b> patient_id<br/>
+                        <b>PF</b> doctor_id<br/>
+                        date<br/>
+                        time<br/>
+                        status
+                    </div>
+                </div>"]
+
+                Meds["<div class='db-table pink'>
+                    <div class='header'>medicines</div>
+                    <div class='fields'>
+                        <b>PK</b> medicine_id<br/>
+                        <b>PF</b> patient_id<br/>
+                        name<br/>
+                        dosage<br/>
+                        frequency<br/>
+                        is_active
+                    </div>
+                </div>"]
+
+                Alerts["<div class='db-table pink'>
+                    <div class='header'>alerts</div>
+                    <div class='fields'>
+                        <b>PK</b> alert_id<br/>
+                        <b>PF</b> patient_id<br/>
+                        type<br/>
+                        symptom<br/>
+                        status
+                    </div>
+                </div>"]
+
+                %% RELATIONSHIPS (Creating a fully connected web left-to-right)
+                
+                %% Primary Identity Flow
+                Users --> Patients
+                
+                %% Patient connects to all records
+                Patients --> Caregiver
+                Patients --> Appt
+                Patients --> Consent
+                Patients --> Meds
+                Patients --> Alerts
+
+                %% Cross-connections to form a detailed network (Like the sample image)
+                Users -- "FK caregiver_id" --> Caregiver
+                Users -- "FK doctor_id" --> Appt
+                
+                %% Logical workflow connections
+                Appt -- "Prescribed at" --> Meds
+                Caregiver -- "Notified of" --> Alerts
+                
+        </div>
+    </div>
+
+</body>
+</html>

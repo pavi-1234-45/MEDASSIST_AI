@@ -1,0 +1,37 @@
+flowchart LR
+    %% Custom Styling for Doctor Ecosystem matching the sample image exactly
+    classDef greenNode fill:#33cc33,stroke:#228b22,stroke-width:2px,color:#000,text-align:left
+    classDef orangeNode fill:#ff9933,stroke:#cc7a00,stroke-width:2px,color:#000,text-align:left
+    classDef pinkNode fill:#ff6666,stroke:#cc0000,stroke-width:2px,color:#000,text-align:left
+
+    %% Nodes defined as visual tables
+    Users["<b>users</b><br/>────────<br/><b>PK</b> user_id<br/>email<br/>role: 'doctor'<br/>phone<br/>is_verified"]:::greenNode
+
+    Doctors["<b>doctors</b><br/>────────<br/><b>PK</b> doctor_id<br/><b>PF</b> user_id<br/>specialty<br/>license_number<br/>hospital_affiliation<br/>consultation_fee<br/>rating"]:::orangeNode
+
+    Appointments["<b>appointments</b><br/>────────<br/><b>PK</b> appointment_id<br/><b>PF</b> doctor_id<br/><b>FK</b> patient_id<br/><b>FK</b> slot_id<br/>date<br/>status<br/>consultation_notes"]:::orangeNode
+
+    Availability["<b>availability_slots</b><br/>────────<br/><b>PK</b> slot_id<br/><b>PF</b> doctor_id<br/>day_of_week<br/>start_time<br/>end_time<br/>is_booked"]:::pinkNode
+
+    Patients["<b>patients</b><br/>────────<br/><b>PK</b> patient_id<br/>name<br/>condition<br/><b>FK</b> assigned_doctor_id"]:::pinkNode
+
+    Medicines["<b>medicines</b><br/>────────<br/><b>PK</b> medicine_id<br/><b>PF</b> doctor_id<br/><b>PF</b> patient_id<br/>medication_name<br/>dosage<br/>instructions"]:::pinkNode
+
+    Reviews["<b>reviews</b><br/>────────<br/><b>PK</b> review_id<br/><b>PF</b> doctor_id<br/><b>FK</b> patient_id<br/>rating_stars<br/>feedback<br/>timestamp"]:::pinkNode
+
+    %% Layout and Connections (Strict Left-to-Right Tiering)
+    Users --> Doctors
+    
+    Doctors --> Availability
+    Doctors --> Patients
+    
+    Availability --> Appointments
+    Patients --> Appointments
+    
+    Appointments --> Medicines
+    Appointments --> Reviews
+    
+    %% Cross-reference Links
+    Patients -. "Leaves" .-> Reviews
+    Patients -. "Receives" .-> Medicines
+    Doctors -. "Prescribes" .-> Medicines

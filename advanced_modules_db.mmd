@@ -1,0 +1,42 @@
+flowchart LR
+    %% Custom Styling matching the MedAssist Ecosystem
+    classDef greenNode fill:#33cc33,stroke:#228b22,stroke-width:2px,color:#000,text-align:left
+    classDef orangeNode fill:#ff9933,stroke:#cc7a00,stroke-width:2px,color:#000,text-align:left
+    classDef pinkNode fill:#ff6666,stroke:#cc0000,stroke-width:2px,color:#000,text-align:left
+
+    %% IoT & Wearables Module
+    IoT["<b>connected_devices</b><br/>────────<br/><b>PK</b> device_id<br/><b>FK</b> patient_id<br/>device_type<br/>mac_address"]:::orangeNode
+    Telemetry["<b>vital_signs</b><br/>────────<br/><b>PK</b> log_id<br/><b>FK</b> device_id<br/>heart_rate<br/>spO2<br/>timestamp"]:::pinkNode
+    
+    %% AI Analysis Module
+    AI["<b>ai_engine</b><br/>────────<br/><b>PK</b> model_id<br/>version<br/>accuracy_score"]:::greenNode
+    Predictions["<b>ai_predictions</b><br/>────────<br/><b>PK</b> prediction_id<br/><b>FK</b> patient_id<br/>risk_level<br/>suggested_action"]:::pinkNode
+    Feedback["<b>model_feedback</b><br/>────────<br/><b>PK</b> feedback_id<br/><b>FK</b> prediction_id<br/><b>FK</b> doctor_id<br/>is_accurate"]:::pinkNode
+
+    %% Pharmacy Module
+    Pharmacy["<b>pharmacies</b><br/>────────<br/><b>PK</b> pharmacy_id<br/>name<br/>location"]:::orangeNode
+    Inventory["<b>drug_inventory</b><br/>────────<br/><b>PK</b> stock_id<br/><b>FK</b> pharmacy_id<br/>medicine_name<br/>stock_level"]:::pinkNode
+    Fulfill["<b>prescription_fulfillment</b><br/>────────<br/><b>PK</b> fulfill_id<br/><b>FK</b> pharmacy_id<br/><b>FK</b> medicine_id<br/>status"]:::pinkNode
+
+    %% Insurance & Billing Module
+    Provider["<b>insurance_providers</b><br/>────────<br/><b>PK</b> provider_id<br/>company_name"]:::orangeNode
+    Policy["<b>patient_policies</b><br/>────────<br/><b>PK</b> policy_id<br/><b>FK</b> provider_id<br/><b>FK</b> patient_id<br/>coverage_limit"]:::pinkNode
+    Claim["<b>insurance_claims</b><br/>────────<br/><b>PK</b> claim_id<br/><b>FK</b> policy_id<br/><b>FK</b> appointment_id<br/>amount<br/>status"]:::pinkNode
+
+    %% Layout Tiering (Left-to-Right)
+    
+    %% IoT Flow
+    IoT --> Telemetry
+    Telemetry -. "Feeds Data to" .-> AI
+    
+    %% AI Flow
+    AI --> Predictions
+    Predictions --> Feedback
+    
+    %% Pharmacy Flow
+    Pharmacy --> Inventory
+    Pharmacy --> Fulfill
+    
+    %% Insurance Flow
+    Provider --> Policy
+    Policy --> Claim

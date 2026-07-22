@@ -1,0 +1,150 @@
+classDiagram
+    %% Apply light blue style matching the sample image exactly
+    classDef default fill:#87ceeb,stroke:#000000,stroke-width:1px,color:#000000
+
+    %% ==========================================
+    %% CORE ENTITIES (From backend/app/schemas)
+    %% ==========================================
+    class User {
+        +String user_id
+        +String email
+        +String password_hash
+        +String role
+        +Boolean is_active
+        +DateTime created_at
+    }
+
+    class Patient {
+        +String patient_id
+        +String user_id
+        +String full_name
+        +Date date_of_birth
+        +String medical_history
+    }
+
+    class Doctor {
+        +String doctor_id
+        +String user_id
+        +String specialization
+        +String license_number
+        +Float consultation_fee
+    }
+
+    class Caregiver {
+        +String caregiver_id
+        +String user_id
+        +List~String~ assigned_patients
+        +String shift_timing
+    }
+
+    class Admin {
+        +String admin_id
+        +String user_id
+        +String access_level
+        +List~String~ audit_logs
+    }
+
+    %% Inheritance
+    User <|-- Patient
+    User <|-- Doctor
+    User <|-- Caregiver
+    User <|-- Admin
+
+    %% ==========================================
+    %% DOMAIN MODELS (From backend/app/schemas)
+    %% ==========================================
+    class Appointment {
+        +String appointment_id
+        +String patient_id
+        +String doctor_id
+        +DateTime scheduled_time
+        +String status
+        +String notes
+    }
+
+    class Medicine {
+        +String medicine_id
+        +String name
+        +String dosage
+        +String frequency
+        +String patient_id
+        +String prescribed_by
+    }
+
+    class Alert {
+        +String alert_id
+        +String patient_id
+        +String severity
+        +String message
+        +Boolean resolved
+        +DateTime timestamp
+    }
+
+    class Report {
+        +String report_id
+        +String patient_id
+        +String generated_by_id
+        +String content
+        +DateTime timestamp
+    }
+
+    class BlockchainRecord {
+        +String record_id
+        +String data_hash
+        +String transaction_id
+        +DateTime verified_at
+    }
+
+    class AIQuery {
+        +String query_id
+        +String patient_id
+        +String symptom_text
+        +String rag_response
+        +Float confidence_score
+    }
+
+    %% Entity Relationships
+    Patient "1" -- "*" Appointment : books
+    Doctor "1" -- "*" Appointment : conducts
+    Patient "1" -- "*" Medicine : prescribed
+    Doctor "1" -- "*" Medicine : prescribes
+    Patient "1" -- "*" Alert : triggers
+    Caregiver "1" -- "*" Alert : responds_to
+    Patient "1" -- "*" Report : owns
+    Doctor "1" -- "*" Report : generates
+    Patient "1" -- "*" BlockchainRecord : secures_data
+    Patient "1" -- "*" AIQuery : analyzed_by
+
+    %% ==========================================
+    %% SERVICES & LOGIC (From backend/app/services & utils)
+    %% ==========================================
+    class AIService {
+        +analyze_symptoms(AIQuery q) String
+        +predict_health_risk(Patient p) Float
+    }
+
+    class MedicalRAG {
+        +retrieve_context(String symptom) List
+        +generate_medical_advice(String context) String
+    }
+
+    class BlockchainService {
+        +hash_medical_data(String data) String
+        +verify_record(BlockchainRecord r) Boolean
+    }
+
+    class MediService {
+        +fetch_drug_interactions(Medicine m1, Medicine m2) Boolean
+        +validate_prescription(Medicine m) Boolean
+    }
+    
+    class DrugAPI {
+        +search_drug_database(String query) List
+    }
+
+    %% Service Dependencies
+    AIService ..> MedicalRAG : Uses for knowledge retrieval
+    AIService ..> AIQuery : Processes
+    BlockchainService ..> BlockchainRecord : Manages ledger
+    MediService ..> Medicine : Validates
+    MediService ..> DrugAPI : Fetches external drug info

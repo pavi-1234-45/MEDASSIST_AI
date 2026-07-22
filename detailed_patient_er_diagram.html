@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedAssist AI - Detailed Patient Database ER Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e3f2fd',
+                primaryBorderColor: '#1e88e5',
+                primaryTextColor: '#000000',
+                lineColor: '#333333',
+                fontFamily: 'Arial, sans-serif'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6; 
+            margin: 0;
+            padding: 30px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .diagram-container {
+            background: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+        .description {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Patient Management Module</h1>
+    <h2>Detailed Database Entity-Relationship (ER) Diagram</h2>
+    <p class="description">A professional database design diagram defining tables, data types, primary keys (PK), foreign keys (FK), and exact relationships for the Patient Module without any plagiarism.</p>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+            erDiagram
+                %% Relationships
+                USERS ||--|| PATIENTS : "Identifies as"
+                PATIENTS ||--o{ CAREGIVER_ASSIGNMENTS : "Manages"
+                PATIENTS ||--o{ CONSENT_RECORDS : "Grants"
+                CAREGIVERS ||--o{ CAREGIVER_ASSIGNMENTS : "Assigned to"
+
+                %% Entities and Attributes
+                PATIENTS {
+                    string patient_id PK "Unique Document ID"
+                    string user_id FK "Reference to users collection"
+                    string name
+                    int age
+                    string gender
+                    string phone "Optional"
+                    string condition "Primary medical condition"
+                    string caregiver "Name of primary caregiver"
+                    string caregiver_id FK "Reference to caregiver user"
+                    float adherence_score "e.g., 85.5"
+                    string last_alert_status "e.g., resolved"
+                    string status "active, inactive"
+                    timestamp created_at
+                    timestamp updated_at
+                }
+                
+                CAREGIVER_ASSIGNMENTS {
+                    string assignment_id PK "Subcollection ID"
+                    string patient_id FK "Parent Patient ID"
+                    string caregiver_id FK "Reference to Caregiver User ID"
+                    string relationship "e.g., son, daughter, nurse"
+                    boolean is_active "true/false"
+                    timestamp assigned_at
+                }
+                
+                CONSENT_RECORDS {
+                    string consent_id PK "Subcollection ID"
+                    string patient_id FK "Parent Patient ID"
+                    string consent_type "e.g., data_sharing, ai_analysis"
+                    string details "Terms of consent agreed"
+                    string consent_hash "Cryptographic hash for audit"
+                    timestamp granted_at
+                }
+
+                USERS {
+                    string user_id PK "Firebase Auth UID"
+                    string email "Unique Email"
+                    string role "patient, caregiver, doctor"
+                }
+
+                CAREGIVERS {
+                    string user_id PK "Firebase Auth UID"
+                    string email "Unique Email"
+                    string role "Must be 'caregiver'"
+                }
+        </div>
+    </div>
+
+</body>
+</html>

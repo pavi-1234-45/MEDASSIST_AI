@@ -1,0 +1,87 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'background': '#ffffff', 'primaryColor': '#ffffff', 'fontSize': '32px', 'fontFamily': 'arial', 'lineColor': '#333333'}}}%%
+graph LR
+    %% Corporate Clean Architecture Styling
+    classDef client fill:#ffffff,stroke:#1976d2,stroke-width:4px,color:#1976d2,font-size:32px,font-weight:bold
+    classDef service fill:#ffffff,stroke:#388e3c,stroke-width:4px,color:#388e3c,font-size:32px,font-weight:bold
+    classDef database fill:#ffffff,stroke:#d32f2f,stroke-width:4px,color:#d32f2f,font-size:32px,font-weight:bold
+    classDef ai fill:#ffffff,stroke:#f57c00,stroke-width:4px,color:#f57c00,font-size:32px,font-weight:bold
+    classDef external fill:#ffffff,stroke:#7b1fa2,stroke-width:4px,color:#7b1fa2,font-size:32px,font-weight:bold
+    
+    %% API Key Note Styling (Dashed Orange Borders)
+    classDef apikey fill:#fff3e0,stroke:#e65100,stroke-width:3px,stroke-dasharray:5 5,color:#d84315,font-size:26px,font-weight:bold
+
+    subgraph Clients["User Modules"]
+        direction TB
+        P[Patient Module]:::client
+        D[Doctor Module]:::client
+        C[Caregiver Module]:::client
+        A[Admin Module]:::client
+    end
+
+    subgraph BackendServices["FastAPI Services (backend/app/routers)"]
+        direction TB
+        UserSvc[users.py / Auth]:::service
+        ApptSvc[appointments.py]:::service
+        AlertSvc[alerts.py]:::service
+        MedSvc[medicines.py / medi_service.py]:::service
+        HealthSvc[health.py / reports.py]:::service
+        CryptoSvc[blockchain.py]:::service
+    end
+
+    subgraph AIEngine["AI Logic (backend/app/services)"]
+        direction TB
+        RAG[medical_rag.py]:::ai
+        AISvc[ai_service.py / ai.py]:::ai
+        AIClient[ai_client.py]:::ai
+    end
+
+    subgraph DataStorage["Persistence (backend/app/database)"]
+        direction TB
+        Redis[(redis_cache.py)]:::database
+        Firestore[(firestore.py)]:::database
+    end
+
+    subgraph External["External Services"]
+        direction TB
+        DrugAPI[drug_api.py]:::external
+    end
+
+    %% =============================
+    %% API KEYS SECTION (From .env)
+    %% =============================
+    AIKeys[API Keys Required:<br/>- AI_API_KEY<br/>- WHISPER<br/>- AI_MODEL_CHAT]:::apikey
+    FDAKeys[API Keys Required:<br/>- OPENFDA_API_KEY<br/>- DATA_GOV_IN_API_KEY]:::apikey
+    MediKeys[API Keys Required:<br/>- MEDI_CLIENT_ID<br/>- MEDI_CLIENT_SECRET]:::apikey
+
+    AIClient -.->|Injects via .env| AIKeys
+    DrugAPI -.->|Injects via .env| FDAKeys
+    MedSvc -.->|Injects via .env| MediKeys
+    %% =============================
+
+    %% Client to Backend Flow
+    Clients --> UserSvc
+    Clients --> ApptSvc
+    Clients --> AlertSvc
+    Clients --> HealthSvc
+    Clients --> MedSvc
+
+    %% Backend to Database Flow
+    UserSvc --> Firestore
+    UserSvc --> Redis
+
+    ApptSvc --> Firestore
+    
+    AlertSvc --> Redis
+    AlertSvc --> Firestore
+    
+    MedSvc --> DrugAPI
+    MedSvc --> Firestore
+    MedSvc --> CryptoSvc
+    
+    %% AI and Health Flow
+    HealthSvc --> Firestore
+    HealthSvc --> AISvc
+    
+    AISvc --> AIClient
+    AISvc --> RAG
+    RAG --> Firestore

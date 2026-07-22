@@ -1,0 +1,36 @@
+flowchart LR
+    %% Custom Styling for Admin Ecosystem matching the sample image exactly
+    classDef greenNode fill:#33cc33,stroke:#228b22,stroke-width:2px,color:#000,text-align:left
+    classDef orangeNode fill:#ff9933,stroke:#cc7a00,stroke-width:2px,color:#000,text-align:left
+    classDef pinkNode fill:#ff6666,stroke:#cc0000,stroke-width:2px,color:#000,text-align:left
+
+    %% Nodes defined as visual tables
+    Users["<b>users</b><br/>────────<br/><b>PK</b> user_id<br/>email<br/>role: 'admin'<br/>phone<br/>is_verified"]:::greenNode
+
+    Admins["<b>admins</b><br/>────────<br/><b>PK</b> admin_id<br/><b>PF</b> user_id<br/>department<br/>access_level<br/>last_login"]:::orangeNode
+
+    Settings["<b>system_settings</b><br/>────────<br/><b>PK</b> setting_id<br/><b>PF</b> admin_id<br/>key<br/>value<br/>last_updated"]:::orangeNode
+
+    AuditLogs["<b>audit_logs</b><br/>────────<br/><b>PK</b> log_id<br/><b>PF</b> admin_id<br/>action<br/>table_affected<br/>timestamp"]:::pinkNode
+
+    Tickets["<b>support_tickets</b><br/>────────<br/><b>PK</b> ticket_id<br/><b>FK</b> user_id<br/><b>FK</b> admin_id<br/>issue_type<br/>status<br/>resolution"]:::pinkNode
+
+    Billing["<b>billing_invoices</b><br/>────────<br/><b>PK</b> invoice_id<br/><b>FK</b> admin_id<br/>amount<br/>status<br/>date_issued"]:::pinkNode
+
+    Banned["<b>banned_users</b><br/>────────<br/><b>PK</b> ban_id<br/><b>FK</b> admin_id<br/><b>FK</b> user_id<br/>reason<br/>ban_date"]:::pinkNode
+
+    %% Strict Left-to-Right Tiering
+    Users --> Admins
+    
+    Admins --> Settings
+    Admins --> AuditLogs
+    
+    Settings --> Tickets
+    AuditLogs --> Tickets
+    
+    Tickets --> Billing
+    Tickets --> Banned
+    
+    %% Cross-reference Links (Dashed)
+    Admins -. "Approves" .-> Billing
+    Admins -. "Enforces" .-> Banned
