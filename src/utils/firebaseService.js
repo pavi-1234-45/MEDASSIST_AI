@@ -14,7 +14,7 @@ import { apiJson, apiClient } from './apiClient';
 /**
  * Firebase Service — Real-time Firestore SDK & REST API integration.
  *
- * Replaces the mock localStorage database with real Firestore.
+ * Replaces the mock localStorage database with real Firestore & REST API.
  * Maintains the exact same interface (get, set, update, remove, onValue, generateId)
  * so NO component changes are required.
  */
@@ -28,10 +28,41 @@ class FirebaseService {
     return path.split('/').filter(k => k);
   }
 
+  _toSnakeCasePayload(entity, value) {
+    if (!value || typeof value !== 'object') return value;
+    const copy = { ...value };
+    
+    if (copy.patientId && !copy.patient_id) copy.patient_id = copy.patientId;
+    if (copy.patientName && !copy.patient_name) copy.patient_name = copy.patientName;
+    if (copy.doctorId && !copy.doctor_id) copy.doctor_id = copy.doctorId;
+    if (copy.doctorName && !copy.doctor_name) copy.doctor_name = copy.doctorName;
+    if (copy.displayName && !copy.display_name) copy.display_name = copy.displayName;
+    if (copy.reminderTimes && !copy.reminder_times) copy.reminder_times = copy.reminderTimes;
+    if (copy.caregiverId && !copy.caregiver_id) copy.caregiver_id = copy.caregiverId;
+
+    // Ensure required schema fields are present
+    if (entity === 'appointments') {
+      if (!copy.patient_id) copy.patient_id = copy.patientId || 'patient_default';
+      if (!copy.patient_name) copy.patient_name = copy.patientName || 'Patient';
+      if (!copy.doctor_id) copy.doctor_id = copy.doctorId || 'doc_123';
+      if (!copy.doctor_name) copy.doctor_name = copy.doctorName || 'Doctor';
+      if (!copy.date) copy.date = new Date().toISOString().split('T')[0];
+      if (!copy.time) copy.time = '10:00 AM';
+    } else if (entity === 'medicines') {
+      if (!copy.patient_id) copy.patient_id = copy.patientId || 'patient_default';
+      if (!copy.dosage) copy.dosage = '1 Tablet';
+      if (!copy.frequency) copy.frequency = 'Daily';
+    } else if (entity === 'alerts' || entity === 'emergencies') {
+      if (!copy.patient_name) copy.patient_name = copy.patientName || 'Patient';
+      if (!copy.symptom) copy.symptom = copy.reason || copy.message || copy.type || 'Alert';
+      if (!copy.type) copy.type = 'Emergency';
+    }
+    
+    return copy;
+  }
+
   /**
    * Reads data from Firestore or REST API.
-   * If reading a collection (odd number of segments), returns an object keyed by ID
-   * for backwards compatibility with onValue callers expecting { id1: item1, id2: item2 }.
    */
   async get(path) {
     const segments = this._getPathSegments(path);
@@ -62,7 +93,7 @@ class FirebaseService {
 
     // Fallback to Backend REST API
     try {
-      const endpoint = this._pathToRestEndpoint(path);
+      const endpoint = this._pathToRestEndpoint(path, 'GET');
       if (endpoint) {
         const data = await apiJson(endpoint.url);
         if (Array.isArray(data)) {
@@ -104,17 +135,18 @@ class FirebaseService {
       }
     }
 
-    // Sync to backend REST API
+    // Sync to backend REST API (POST to collection endpoint)
     try {
-      const endpoint = this._pathToRestEndpoint(path);
+      const endpoint = this._pathToRestEndpoint(path, 'POST');
       if (endpoint) {
+        const payload = this._toSnakeCasePayload(segments[0], value);
         await apiJson(endpoint.url, {
           method: 'POST',
-          body: JSON.stringify(value),
+          body: JSON.stringify(payload),
         });
       }
     } catch (e) {
-      // Best-effort backend sync
+      console.warn(`REST sync POST failed for ${path}:`, e.message);
     }
 
     return value;
@@ -142,17 +174,18 @@ class FirebaseService {
       }
     }
 
-    // Sync to backend REST API
+    // Sync to backend REST API (PUT to item endpoint)
     try {
-      const endpoint = this._pathToRestEndpoint(path);
+      const endpoint = this._pathToRestEndpoint(path, 'PUT');
       if (endpoint) {
+        const payload = this._toSnakeCasePayload(segments[0], updates);
         await apiJson(endpoint.url, {
           method: 'PUT',
-          body: JSON.stringify(updates),
+          body: JSON.stringify(payload),
         });
       }
     } catch (e) {
-      // Best-effort backend sync
+      console.warn(`REST sync PUT failed for ${path}:`, e.message);
     }
 
     return updates;
@@ -174,14 +207,14 @@ class FirebaseService {
       }
     }
 
-    // Sync to backend REST API
+    // Sync to backend REST API (DELETE)
     try {
-      const endpoint = this._pathToRestEndpoint(path);
+      const endpoint = this._pathToRestEndpoint(path, 'DELETE');
       if (endpoint) {
         await apiClient(endpoint.url, { method: 'DELETE' });
       }
     } catch (e) {
-      // Best-effort
+      console.warn(`REST sync DELETE failed for ${path}:`, e.message);
     }
   }
 
@@ -212,7 +245,6 @@ class FirebaseService {
             }
           }, (error) => {
             console.warn(`onSnapshot collection error for ${path}:`, error.message);
-            // Fallback to single fetch
             this.get(path).then(data => callback(data));
           });
           return unsubscribe;
@@ -236,12 +268,12 @@ class FirebaseService {
       }
     }
 
-    // Fallback: poll or fetch once via API
+    // Fallback: fetch once via API
     this.get(path).then(data => callback(data));
     return () => {};
   }
 
-  _pathToRestEndpoint(path) {
+  _pathToRestEndpoint(path, method = 'GET') {
     const segments = this._getPathSegments(path);
     if (segments.length === 0) return null;
 
@@ -258,6 +290,11 @@ class FirebaseService {
 
     const mapped = entityMap[segments[0]];
     if (!mapped) return null;
+
+    // POST requests always target the collection endpoint e.g., /api/appointments
+    if (method === 'POST') {
+      return { url: `/api/${mapped}` };
+    }
 
     const id = segments.length > 1 ? segments[segments.length - 1] : null;
     return { url: id ? `/api/${mapped}/${id}` : `/api/${mapped}` };
