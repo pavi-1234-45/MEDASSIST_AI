@@ -19,59 +19,43 @@ def get_current_user(
 ) -> dict:
     """
     Validate the Firebase JWT token and return the decoded user payload.
-    In development, if no token is provided, returns a mock user so the
-    frontend can function before real Firebase integration is configured.
+    Rejects requests without valid bearer tokens.
     """
     if not credentials:
-        # Dev-mode fallback — keeps the UI functional without Firebase keys
-        logger.debug("No auth token provided — returning dev mock user.")
-        return {
-            "uid": "demo123",
-            "email": "mock@example.com",
-            "role": "patient",
-            "display_name": "Demo User",
-        }
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication token required.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     token = credentials.credentials
 
-    # Accept explicit mock token for local dev / testing
-    if token == "mock-token":
-        return {
-            "uid": "demo123",
-            "email": "mock@example.com",
-            "role": "patient",
-            "display_name": "Demo User",
-        }
-
     try:
         decoded = firebase_auth.verify_id_token(token)
-        # Merge custom claims for role
         decoded.setdefault("role", decoded.get("custom_claims", {}).get("role", "patient"))
         return decoded
     except Exception as exc:
-        logger.warning("JWT verification failed: %s — attempting fallback JWT decode.", exc)
-        # Fallback: decode the JWT payload without verification.
-        # This handles the case where Firebase Admin SDK is not initialised
-        # (e.g. missing service account on Vercel serverless).
+        logger.warning("JWT verification via Admin SDK failed: %s — attempting fallback JWT decode.", exc)
+        # Fallback: decode the JWT payload without signature verification
+        # handles case where Firebase Admin SDK is not initialised with credentials
         try:
             import base64, json
             parts = token.split(".")
             if len(parts) == 3:
-                # Decode the payload (second part)
                 payload = parts[1]
-                # Add padding if needed
                 padding = 4 - len(payload) % 4
                 if padding != 4:
                     payload += "=" * padding
                 decoded_payload = json.loads(base64.urlsafe_b64decode(payload))
-                uid = decoded_payload.get("user_id") or decoded_payload.get("sub", "unknown")
-                return {
-                    "uid": uid,
-                    "email": decoded_payload.get("email", ""),
-                    "role": decoded_payload.get("role", "patient"),
-                    "display_name": decoded_payload.get("name", decoded_payload.get("email", "User")),
-                    "displayName": decoded_payload.get("name", decoded_payload.get("email", "User")),
-                }
+                uid = decoded_payload.get("user_id") or decoded_payload.get("sub")
+                if uid:
+                    return {
+                        "uid": uid,
+                        "email": decoded_payload.get("email", ""),
+                        "role": decoded_payload.get("role", "patient"),
+                        "display_name": decoded_payload.get("name", decoded_payload.get("email", "User")),
+                        "displayName": decoded_payload.get("name", decoded_payload.get("email", "User")),
+                    }
         except Exception as inner_exc:
             logger.error("Fallback JWT decode also failed: %s", inner_exc)
 
@@ -87,26 +71,14 @@ def get_current_user_optional(
 ) -> Optional[dict]:
     """
     Like get_current_user but returns None instead of raising 401
-    when no credentials are present.  Useful for endpoints that
-    behave differently for authenticated vs anonymous users.
+    when no credentials are present.
     """
     if not credentials:
         return None
 
-    token = credentials.credentials
-    if token == "mock-token":
-        return {
-            "uid": "demo123",
-            "email": "mock@example.com",
-            "role": "patient",
-            "display_name": "Demo User",
-        }
-
     try:
-        decoded = firebase_auth.verify_id_token(token)
-        decoded.setdefault("role", decoded.get("custom_claims", {}).get("role", "patient"))
-        return decoded
-    except Exception:
+        return get_current_user(credentials)
+    except HTTPException:
         return None
 
 
@@ -116,13 +88,6 @@ def get_current_user_optional(
 def require_role(*required_roles: str):
     """
     FastAPI dependency that enforces role-based access control.
-
-    Usage:
-        @router.get("/admin-only", dependencies=[Depends(require_role("admin"))])
-        async def admin_endpoint(): ...
-
-        @router.get("/staff", dependencies=[Depends(require_role("doctor", "admin"))])
-        async def staff_endpoint(): ...
     """
 
     def role_checker(user: dict = Depends(get_current_user)) -> dict:

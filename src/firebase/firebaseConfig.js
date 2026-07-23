@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBbr2gyD7NrZ_dwO2Hml9GA78BESbGs7ks",
@@ -13,18 +14,18 @@ const firebaseConfig = {
 
 let app;
 let auth = null;
+let db = null;
 
 try {
-  // Only initialize if config is somewhat valid (not the raw placeholders if possible, but here we'll try anyway)
-  // Firebase will throw error if API key is invalid format.
-  if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+  if (firebaseConfig.apiKey !== "AIzaSyBbr2gyD7NrZ_dwO2Hml9GA78BESbGs7ksY") {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    db = getFirestore(app);
   } else {
-    console.warn("Firebase not configured properly. Using Mock Auth mode.");
+    console.warn("Firebase not configured properly.");
   }
 } catch (error) {
-  console.warn("Firebase initialization failed. Using demo mode.", error);
+  console.warn("Firebase initialization failed.", error);
 }
 
-export { auth };
+export { auth, db };

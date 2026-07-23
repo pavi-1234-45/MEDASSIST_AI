@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Splash from '../pages/Splash';
-import { seedMockData } from '../utils/dataService';
 
 export default function AppInitializer({ children }) {
   const [showStartupSplash, setShowStartupSplash] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    seedMockData();
-    
     // Always show splash on startup/refresh for exactly 4 seconds
     const timer = setTimeout(() => {
       setShowStartupSplash(false);

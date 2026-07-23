@@ -1,49 +1,13 @@
 import { apiJson } from './apiClient';
 
 /**
- * Data Service — bridges the frontend to the backend REST API.
- *
- * Function signatures and return shapes are identical to the original
- * localStorage-based implementation so NO component changes are needed.
- * Falls back to localStorage if the backend is unreachable.
+ * Data Service — connects frontend components to the backend REST API.
+ * Real API integration only — zero mock data or localStorage fallbacks.
  */
 
-// ── Seed mock data (no-op when backend is available) ────────────────
+// ── No-op seed function (kept to avoid breaking callers) ────────────
 export const seedMockData = () => {
-  // Seed localStorage as fallback in case the backend is unavailable.
-  if (!localStorage.getItem('medassist_patients')) {
-    localStorage.setItem('medassist_patients', JSON.stringify([
-      { id: 'p1', name: 'John Doe', age: 45, gender: 'Male', phone: '1234567890', condition: 'Diabetes', caregiver: 'Jane Doe', adherence: 85, lastAlert: '2 hours ago', status: 'Active' },
-      { id: 'p2', name: 'Alice Smith', age: 62, gender: 'Female', phone: '0987654321', condition: 'Hypertension', caregiver: 'Bob Smith', adherence: 60, lastAlert: '1 day ago', status: 'Needs Attention' },
-      { id: 'p3', name: 'Michael Johnson', age: 34, gender: 'Male', phone: '5551234567', condition: 'Asthma', caregiver: 'Sarah Johnson', adherence: 95, lastAlert: 'None', status: 'Stable' },
-      { id: 'p4', name: 'Emma Brown', age: 78, gender: 'Female', phone: '5559876543', condition: 'Arthritis', caregiver: 'Tom Brown', adherence: 40, lastAlert: '5 mins ago', status: 'Critical' }
-    ]));
-  }
-
-  if (!localStorage.getItem('medassist_doctors')) {
-    localStorage.setItem('medassist_doctors', JSON.stringify([
-      { id: 'd1', name: 'Dr. Sarah Wilson', specialization: 'Cardiologist', hospital: 'City General', appointments: 12, emergencies: 2 },
-      { id: 'd2', name: 'Dr. James Chen', specialization: 'Endocrinologist', hospital: 'Metro Health', appointments: 8, emergencies: 0 },
-      { id: 'd3', name: 'Dr. Emily Davis', specialization: 'General Physician', hospital: 'City General', appointments: 15, emergencies: 5 }
-    ]));
-  }
-
-  if (!localStorage.getItem('medassist_appointments_global')) {
-    localStorage.setItem('medassist_appointments_global', JSON.stringify([
-      { id: 'a1', patientId: 'p1', patientName: 'John Doe', doctorId: 'd1', doctorName: 'Dr. Sarah Wilson', date: '2023-11-15', time: '10:00 AM', status: 'Confirmed' },
-      { id: 'a2', patientId: 'p2', patientName: 'Alice Smith', doctorId: 'd2', doctorName: 'Dr. James Chen', date: '2023-11-16', time: '02:30 PM', status: 'Scheduled' },
-      { id: 'a3', patientId: 'p4', patientName: 'Emma Brown', doctorId: 'd3', doctorName: 'Dr. Emily Davis', date: '2023-11-14', time: '11:00 AM', status: 'Completed' },
-      { id: 'a4', patientId: 'p3', patientName: 'Michael Johnson', doctorId: 'd3', doctorName: 'Dr. Emily Davis', date: '2023-11-10', time: '09:00 AM', status: 'Missed' }
-    ]));
-  }
-
-  if (!localStorage.getItem('medassist_alerts_global')) {
-    localStorage.setItem('medassist_alerts_global', JSON.stringify([
-      { id: 'al1', type: 'Emergency', patientName: 'Emma Brown', symptom: 'Severe chest pain', status: 'unread', time: '5 mins ago' },
-      { id: 'al2', type: 'Missed Medicine', patientName: 'Alice Smith', symptom: 'Lisinopril 10mg', status: 'unread', time: '2 hours ago' },
-      { id: 'al3', type: 'Emergency', patientName: 'John Doe', symptom: 'Fainted', status: 'Resolved', time: '1 day ago' }
-    ]));
-  }
+  // No-op: Mock data disabled. All data resides in Firestore / REST API.
 };
 
 // ── Helper: map backend snake_case to frontend camelCase ────────────
@@ -80,39 +44,44 @@ const mapAlert = (a) => ({
   time: a.time,
 });
 
-// ── Data getters (API-first with localStorage fallback) ─────────────
+// ── Data getters (REST API) ─────────────────────────────────────────
 export const getPatients = async () => {
   try {
     const data = await apiJson('/api/patients');
-    return data.map(mapPatient);
-  } catch {
-    return JSON.parse(localStorage.getItem('medassist_patients') || '[]');
+    return Array.isArray(data) ? data.map(mapPatient) : [];
+  } catch (err) {
+    console.warn("Failed to fetch patients:", err.message);
+    return [];
   }
 };
 
 export const getDoctors = async () => {
   try {
-    return await apiJson('/api/doctors');
-  } catch {
-    return JSON.parse(localStorage.getItem('medassist_doctors') || '[]');
+    const data = await apiJson('/api/doctors');
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.warn("Failed to fetch doctors:", err.message);
+    return [];
   }
 };
 
 export const getAppointments = async () => {
   try {
     const data = await apiJson('/api/appointments');
-    return data.map(mapAppointment);
-  } catch {
-    return JSON.parse(localStorage.getItem('medassist_appointments_global') || '[]');
+    return Array.isArray(data) ? data.map(mapAppointment) : [];
+  } catch (err) {
+    console.warn("Failed to fetch appointments:", err.message);
+    return [];
   }
 };
 
 export const getAlerts = async () => {
   try {
     const data = await apiJson('/api/alerts');
-    return data.map(mapAlert);
-  } catch {
-    return JSON.parse(localStorage.getItem('medassist_alerts_global') || '[]');
+    return Array.isArray(data) ? data.map(mapAlert) : [];
+  } catch (err) {
+    console.warn("Failed to fetch alerts:", err.message);
+    return [];
   }
 };
 
@@ -123,14 +92,8 @@ export const updateAppointmentStatus = async (id, newStatus) => {
       method: 'PUT',
       body: JSON.stringify({ status: newStatus }),
     });
-  } catch {
-    // Fallback to localStorage
-    const apps = JSON.parse(localStorage.getItem('medassist_appointments_global') || '[]');
-    const index = apps.findIndex(a => a.id === id);
-    if (index !== -1) {
-      apps[index].status = newStatus;
-      localStorage.setItem('medassist_appointments_global', JSON.stringify(apps));
-    }
+  } catch (err) {
+    console.error("Failed to update appointment status:", err.message);
   }
 };
 
@@ -140,13 +103,7 @@ export const updateAlertStatus = async (id, newStatus) => {
       method: 'PUT',
       body: JSON.stringify({ status: newStatus }),
     });
-  } catch {
-    // Fallback to localStorage
-    const alerts = JSON.parse(localStorage.getItem('medassist_alerts_global') || '[]');
-    const index = alerts.findIndex(a => a.id === id);
-    if (index !== -1) {
-      alerts[index].status = newStatus;
-      localStorage.setItem('medassist_alerts_global', JSON.stringify(alerts));
-    }
+  } catch (err) {
+    console.error("Failed to update alert status:", err.message);
   }
 };

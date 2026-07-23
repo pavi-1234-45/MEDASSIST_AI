@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
-  onAuthStateChanged,
   onIdTokenChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -10,6 +9,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
+import { apiClient } from '../utils/apiClient';
 
 const AuthContext = createContext();
 
@@ -20,14 +20,22 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // Using auth imported from firebaseConfig
 
   useEffect(() => {
-    // Check for mock user or stored user first
     const storedUser = localStorage.getItem('medassist_user');
     if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
+      try {
+        const parsed = JSON.parse(storedUser);
+        // Only keep if it's not a demo user
+        if (parsed && parsed.uid && !parsed.uid.startsWith('demo')) {
+          setCurrentUser(parsed);
+        } else {
+          localStorage.removeItem('medassist_user');
+          localStorage.removeItem('token');
+        }
+      } catch (e) {
+        localStorage.removeItem('medassist_user');
+      }
     }
 
     if (!auth) {
@@ -50,23 +58,19 @@ export function AuthProvider({ children }) {
           if (token) localStorage.setItem('token', token);
           setCurrentUser(userData);
         } else {
-          // Avoid clearing mock user if Firebase reports null
-          const stored = localStorage.getItem('medassist_user');
-          const isMock = stored && (JSON.parse(stored).uid?.toString().startsWith('demo') || !stored.includes('"uid"'));
-          if (!isMock) {
-            setCurrentUser(null);
-            localStorage.removeItem('token');
-          }
+          setCurrentUser(null);
+          localStorage.removeItem('medassist_user');
+          localStorage.removeItem('token');
         }
         setLoading(false);
       });
 
       return unsubscribe;
     } catch (e) {
-      console.error(e);
+      console.error("Auth state listener error:", e);
       setLoading(false);
     }
-  }, [auth]);
+  }, []);
 
   // Listen for 401 Unauthorized events from apiClient
   useEffect(() => {
@@ -77,90 +81,63 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, []);
 
-  const signup = async (email, password, displayName, role, extraData = {}) => {
+  const syncUserToBackend = async (userData) => {
     try {
-      if (auth) {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, { displayName });
-        
-        const token = await userCredential.user.getIdToken();
-        const userData = {
-          uid: userCredential.user.uid,
-          email: userCredential.user.email,
-          displayName: displayName,
-          role: role,
-          ...extraData
-        };
-        localStorage.setItem('medassist_user', JSON.stringify(userData));
-        localStorage.setItem('token', token);
-        setCurrentUser(userData);
-        
-        return userCredential;
-      } else {
-        throw new Error("No Firebase Auth");
-      }
-    } catch (error) {
-      console.log("Fallback to Mock Registration due to:", error.message);
-      // Mock flow
-      const mockUser = { 
-        uid: Date.now().toString(), 
-        email, 
-        displayName, 
-        role,
-        ...extraData,
-        created_at: new Date().toISOString()
-      };
-      localStorage.setItem('medassist_user', JSON.stringify(mockUser));
-      
-      // Also save to a fake database list of users if we want
-      const usersDB = JSON.parse(localStorage.getItem('medassist_db_users') || '[]');
-      usersDB.push(mockUser);
-      localStorage.setItem('medassist_db_users', JSON.stringify(usersDB));
-      
-      setCurrentUser(mockUser);
-      return mockUser;
+      await apiClient('/api/users', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: userData.email,
+          display_name: userData.displayName || 'User',
+          role: userData.role,
+          phone: userData.phone || null
+        })
+      });
+    } catch (err) {
+      console.warn("Could not sync user profile to backend API:", err.message);
     }
   };
 
-  const login = async (email, password, role) => {
-    try {
-      if (auth) {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const token = await userCredential.user.getIdToken();
-        const userData = {
-          uid: userCredential.user.uid,
-          email: userCredential.user.email,
-          displayName: userCredential.user.displayName,
-          role: role
-        };
-        localStorage.setItem('medassist_user', JSON.stringify(userData));
-        localStorage.setItem('token', token);
-        setCurrentUser(userData);
-        return userCredential;
-      } else {
-        throw new Error("No Firebase Auth");
-      }
-    } catch (error) {
-      console.log("Fallback to Mock Login due to:", error.message);
-      
-      // Look up user in fake DB
-      const usersDB = JSON.parse(localStorage.getItem('medassist_db_users') || '[]');
-      let mockUser = usersDB.find(u => u.email === email && u.role === role);
-      
-      if (!mockUser) {
-         // Create a demo user if they don't exist
-         mockUser = { 
-           uid: "demo123", 
-           email, 
-           displayName: "Demo User", 
-           role: role 
-         };
-      }
-      
-      localStorage.setItem('medassist_user', JSON.stringify(mockUser));
-      setCurrentUser(mockUser);
-      return mockUser;
+  const signup = async (email, password, displayName, role, extraData = {}) => {
+    if (!auth) {
+      throw new Error("Firebase Auth is not initialized. Check your Firebase API key in config.");
     }
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(userCredential.user, { displayName });
+    
+    const token = await userCredential.user.getIdToken();
+    const userData = {
+      uid: userCredential.user.uid,
+      email: userCredential.user.email,
+      displayName: displayName,
+      role: role,
+      ...extraData
+    };
+    localStorage.setItem('medassist_user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+    setCurrentUser(userData);
+    
+    await syncUserToBackend(userData);
+    return userCredential;
+  };
+
+  const login = async (email, password, role) => {
+    if (!auth) {
+      throw new Error("Firebase Auth is not initialized. Check your Firebase API key in config.");
+    }
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const token = await userCredential.user.getIdToken();
+    const userData = {
+      uid: userCredential.user.uid,
+      email: userCredential.user.email,
+      displayName: userCredential.user.displayName,
+      role: role
+    };
+    localStorage.setItem('medassist_user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+    setCurrentUser(userData);
+
+    await syncUserToBackend(userData);
+    return userCredential;
   };
 
   const logout = async () => {
@@ -180,31 +157,24 @@ export function AuthProvider({ children }) {
   };
 
   const loginWithGoogle = async (role) => {
-    try {
-      if (auth) {
-        const provider = new GoogleAuthProvider();
-        const userCredential = await signInWithPopup(auth, provider);
-        const token = await userCredential.user.getIdToken();
-        const userData = {
-          uid: userCredential.user.uid,
-          email: userCredential.user.email,
-          displayName: userCredential.user.displayName,
-          role: role
-        };
-        localStorage.setItem('medassist_user', JSON.stringify(userData));
-        localStorage.setItem('token', token);
-        setCurrentUser(userData);
-        return userCredential;
-      } else {
-        throw new Error("No Firebase Auth");
-      }
-    } catch (error) {
-      console.log("Fallback to Mock Google Login");
-      const mockUser = { uid: "google123", email: "google@demo.com", displayName: "Google Demo", role: role };
-      localStorage.setItem('medassist_user', JSON.stringify(mockUser));
-      setCurrentUser(mockUser);
-      return mockUser;
+    if (!auth) {
+      throw new Error("Firebase Auth is not initialized. Check your Firebase API key in config.");
     }
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    const token = await userCredential.user.getIdToken();
+    const userData = {
+      uid: userCredential.user.uid,
+      email: userCredential.user.email,
+      displayName: userCredential.user.displayName,
+      role: role
+    };
+    localStorage.setItem('medassist_user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+    setCurrentUser(userData);
+
+    await syncUserToBackend(userData);
+    return userCredential;
   };
 
   const value = {
